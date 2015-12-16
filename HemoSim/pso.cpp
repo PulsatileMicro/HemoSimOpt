@@ -330,12 +330,13 @@ void PSO_FirstComputPandGbest(void)
   //P=X;  
   for(i=0; i<PSO_PNum; i++){  
     for(j=0;j<PSO_Dim;j++){  
-      s->Particle[i].P[j]=s->Particle[i].X[j];  
+      s->Particle[i].PBest[j]=s->Particle[i].X[j];  
     }  
+	s->Particle[i].PBestFitness = s->Particle[i].Fitness;
   }  
   //Computation of GBest  
   for(i=0; i<PSO_PNum; i++)  
-    if(s->Particle[i].Fitness <=s.GBestFitness){  
+    if(s->Particle[i].Fitness <= s->GBestFitness){  
       s->GBestFitness = s->Particle[i].Fitness;
       for(j=0;j<PSO_Dim;j++){  
         s->GBest[j]=s->Particle[i].X[j];
@@ -356,7 +357,7 @@ void PSO_UpdateofVandX(){
     for(j=0; j<PSO_Dim; j++)
       s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
     s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
-      rand()/(double)RAND_MAX*s->C1*(s->Particle[i].P[j] - s->Particle[i].X[j])+  
+      rand()/(double)RAND_MAX*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
       rand()/(double)RAND_MAX*s->C2*(s->GBest[j] - s->Particle[i].X[j]);  
     for(j=0; j<PSO_Dim; j++){  
       if(s->Particle[i].V[j]>s->Vmax[j])
@@ -382,7 +383,7 @@ void PSO_ModifyVandX(int i){
   // 重新更新一次Velocity
   for(j=0; j<PSO_Dim; j++)
     s->Particle[i].V[j] = s->W*s->Particle[i].LastV[j]+
-    rand()/(double)RAND_MAX*s->C1*(s->Particle[i].P[j] - s->Particle[i].LastX[j])+  
+    rand()/(double)RAND_MAX*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].LastX[j])+  
     rand()/(double)RAND_MAX*s->C2*(s->GBest[j] - s->Particle[i].LastX[j]);  
   for(j=0; j<PSO_Dim; j++){  
     if(s->Particle[i].V[j]>s->Vmax[j])
@@ -403,14 +404,14 @@ void PSO_ModifyVandX(int i){
 
 void PSO_UpdatePandGbest(){
   int i,j;
-  double tempFitness;
   //update of P if the X is bigger than current P  
   for (i = 0; i < PSO_PNum; i++){  
     //printf(" The %dth of P is: ",i);  
-    if (s->Particle[i].Fitness < PSO_ComputAFitness(s->Particle[i].P)){  
+    if (s->Particle[i].Fitness <= s->Particle[i].PBestFitness){  
       for(j=0;j<PSO_Dim;j++){  
-        s->Particle[i].P[j] = s->Particle[i].X[j];  
+        s->Particle[i].PBest[j] = s->Particle[i].X[j];  
       }  
+	  s->Particle[i].PBestFitness = s->Particle[i].Fitness;
     }  
     //printf(" %.2f %.2f \n",s->Particle[i].P[0],s->Particle[i].P[1]);  
   }  
@@ -420,11 +421,10 @@ void PSO_UpdatePandGbest(){
   //update of GBest  
   for(i=0; i<PSO_PNum; i++)
     // if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
-    tempFitness = PSO_ComputAFitness(s->Particle[i].P);
-    if(tempFitness <= s->GBestFitness){
-      s->GBestFitness = tempFitness;
+    if(s->Particle[i].PBestFitness <= s->GBestFitness){
+      s->GBestFitness = s->Particle[i].PBestFitness;
       for(j=0;j<PSO_Dim;j++){
-        s->GBest[j]=s->Particle[i].P[j];
+        s->GBest[j]=s->Particle[i].PBest[j];
       }
     }
   printf("Fitness of GBest:%.2f \n", s->GBestFitness); 
