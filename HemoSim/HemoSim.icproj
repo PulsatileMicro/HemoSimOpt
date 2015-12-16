@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioProject
+	ProjectType="Intel C++ Project"
+	Version="11.1"
+	Name="HemoSim"
+	ProjectGUID="{C9BE3F97-2019-4205-AF35-EB90CEF44168}"
+	VCNestedProjectGUID="{AE60B08E-3C3D-4C7B-B7E8-CA830730E6EA}"
+	VCNestedProjectFileName="HemoSim.vcproj">
+	<Configurations/>
+	<Files/>
+</VisualStudioProject>
