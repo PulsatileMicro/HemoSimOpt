@@ -17,7 +17,6 @@ typedef struct PARTICLE{
 
 typedef struct SWARM{  
   particle Particle[PSO_PNum];
-  int GBestIndex;  
   double GBestFitness;
   double GBest[PSO_Dim];
   double W;

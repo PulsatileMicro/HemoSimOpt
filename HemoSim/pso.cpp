@@ -278,8 +278,12 @@ void PSO_ComputFitofSwarm(int isFirst, int nIter){
         AdapParam::adapLogFile << endl;*/
 
         // 尝试计算适应度函数
-        AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
+		AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
       }while(AdapParam::errFlag!=AdapParam::NO_ADAP_ERR);
+	  if (i == 0)
+	  {
+		  s->GBestFitness = s->Particle[i].Fitness;
+	  }
     }
     else{
       // 不是第一次，则尝试计算适应度函数
@@ -330,18 +334,15 @@ void PSO_FirstComputPandGbest(void)
     }  
   }  
   //Computation of GBest  
-  s->GBestIndex = 0;
   for(i=0; i<PSO_PNum; i++)  
-    if(s->Particle[i].Fitness <=s->Particle[s->GBestIndex].Fitness){  
-      s->GBestIndex = i;
+    if(s->Particle[i].Fitness <=s.GBestFitness){  
       s->GBestFitness = s->Particle[i].Fitness;
       for(j=0;j<PSO_Dim;j++){  
-        s->GBest[j]=s->Particle[s->GBestIndex].P[j];
+        s->GBest[j]=s->Particle[i].X[j];
       }
     }
   
-  printf("GBestIndex, Fitness of GBest:%d ,%.2f \n",  
-    s->GBestIndex ,s->Particle[s->GBestIndex].Fitness);
+  printf("Fitness of GBest:%d ,%.2f \n",s->GBestFitness);
 
   AdapParam::adapGBestFile.open("Global_Best_Record.dat",ios::app);
   AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
@@ -421,10 +422,9 @@ void PSO_UpdatePandGbest(){
     // if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
     tempFitness = PSO_ComputAFitness(s->Particle[i].P);
     if(tempFitness <= s->GBestFitness){
-      s->GBestIndex = i;
       s->GBestFitness = tempFitness;
       for(j=0;j<PSO_Dim;j++){
-        s->GBest[j]=s->Particle[s->GBestIndex].P[j];
+        s->GBest[j]=s->Particle[i].P[j];
       }
     }
   printf("Fitness of GBest:%.2f \n", s->GBestFitness); 
