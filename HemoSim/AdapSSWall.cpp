@@ -189,7 +189,7 @@ void Adap_SS_Solver::solve(){
 
       // Start Iteration
       AdapParam::adapLogFile << "Iteration 1" << endl;
-      PSO_ComputFitofSwarm(1,n);
+      PSO_ComputFitofSwarm(0,n);
       PSO_FirstComputPandGbest();
       while(n++!=PSO_N)
       {  
@@ -502,9 +502,10 @@ int Adap_SS_Solver::AdapObjFunc()
       default:
         break;
     }
-    // cout << "error code=" << errStr << endl;
-    AdapParam::ErrorQ=AdapParam::ErrorQ*10;
-    AdapParam::ErrorV=AdapParam::ErrorV*10;
+    cout << "error code=" << errStr << endl;
+    /*AdapParam::ErrorQ=AdapParam::ErrorQ*10;
+    AdapParam::ErrorV=AdapParam::ErrorV*10;*/
+	AdapParam::ErrorV = AdapParam::ErrorQ = 100.00;
   }
   
   // Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
