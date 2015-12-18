@@ -7,17 +7,17 @@
 
 typedef struct PARTICLE{
   double X[PSO_Dim];
-  double P[PSO_Dim];
+  double PBest[PSO_Dim];
   double V[PSO_Dim];
   double LastX[PSO_Dim];    // 在更新前，保存上次的X和V，万一更新的粒子不能算出目标函数值，则需要回到上一次的值，重新计算新的X和V
   double LastV[PSO_Dim];
   double Fitness;
+  double PBestFitness;
   int newFlag;              // 初始为0，如果该粒子是淘汰后新引入的，则计数加1
 }particle;
 
 typedef struct SWARM{  
   particle Particle[PSO_PNum];
-  int GBestIndex;  
   double GBestFitness;
   double GBest[PSO_Dim];
   double W;
