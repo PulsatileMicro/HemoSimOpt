@@ -120,13 +120,12 @@ void PSO_RandInitofSwarm(void){
     s->Vmax[j] = (s->Xup[j]+s->Xdown[j])/10;
   }  
 
-  srand((unsigned)time(NULL));
   for(i=0; i<PSO_PNum; i++){  
     //printf(" The %dth of X is: ",i);  
     for(j=0; j<PSO_Dim; j++){
-      s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
-      s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
-      //printf(" %.2f \n ",s->Particle[i].X[j]);  
+      s->Particle[i].X[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
+      s->Particle[i].V[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
+	  cout << setprecision(6) << setw(15) << s->Particle[i].X[j];
     }  
   }  
 }
@@ -279,30 +278,38 @@ void PSO_ComputFitofSwarm(int isFirst, int nIter){
 
         // 尝试计算适应度函数
 		AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
-      }while(AdapParam::errFlag!=AdapParam::NO_ADAP_ERR);
-	  if (i == 0)
-	  {
-		  s->GBestFitness = s->Particle[i].Fitness;
-	  }
+	  }while(FALSE);
+		if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
+		{
+			AdapParam::ErrorV = -AdapParam::ErrorV;
+		}
     }
     else{
       // 不是第一次，则尝试计算适应度函数
       AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
       // 如果更新后的粒子计算不出目标值，则淘汰该粒子，引入新粒子，直至能够计算出目标值
-      while(AdapParam::errFlag!=AdapParam::NO_ADAP_ERR){
-        // 随机化粒子及速度
-        for(j=0; j<PSO_Dim; j++){
-          s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
-          s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
-        }
-        AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
-      }
+      //while(AdapParam::errFlag!=AdapParam::NO_ADAP_ERR){
+      //  // 随机化粒子及速度
+      //  for(j=0; j<PSO_Dim; j++){
+      //    s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
+      //    s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
+      //  }
+      //  AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
+      //}
+	  if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
+	  {
+		  AdapParam::ErrorV = -AdapParam::ErrorV;
+	  }
     }
 
-    printf("Good Particle, The Fitness of %dth Particle: ",i);
+    printf("Particle, The Fitness of %dth Particle: ",i);
     // s->Particle[i].Fitness = AdapParam::ErrorD;
     s->Particle[i].Fitness = AdapParam::ErrorV;
-    printf(" %.2f\n",s->Particle[i].Fitness);
+	if (i == 0)
+	{
+		  s->GBestFitness = s->Particle[i].Fitness;
+	}
+	cout << setprecision(6) << setw(15) << s->Particle[i].Fitness << endl;
 
     // 将Good Particle及其对应的Fitness value写入文件记录
     AdapParam::adapLogFile << setw(15) << i << setprecision(6) << setw(15) << AdapParam::ErrorV
@@ -336,14 +343,14 @@ void PSO_FirstComputPandGbest(void)
   }  
   //Computation of GBest  
   for(i=0; i<PSO_PNum; i++)  
-    if(s->Particle[i].Fitness <= s->GBestFitness){  
+    if(s->Particle[i].Fitness < s->GBestFitness){  
       s->GBestFitness = s->Particle[i].Fitness;
       for(j=0;j<PSO_Dim;j++){  
         s->GBest[j]=s->Particle[i].X[j];
       }
     }
   
-  printf("Fitness of GBest:%d ,%.2f \n",s->GBestFitness);
+	cout<< "Fitness of GBest: " << s->GBestFitness <<endl;
 
   AdapParam::adapGBestFile.open("Global_Best_Record.dat",ios::app);
   AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
@@ -351,14 +358,14 @@ void PSO_FirstComputPandGbest(void)
 
 void PSO_UpdateofVandX(){
   int i,j;  
-  // srand((unsigned)time(NULL));  
+  srand((unsigned)time(NULL));  
   for(i=0; i<PSO_PNum; i++){  
     //printf(" The %dth of X is: ",i);  
     for(j=0; j<PSO_Dim; j++)
       s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
     s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
-      rand()/(double)RAND_MAX*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
-      rand()/(double)RAND_MAX*s->C2*(s->GBest[j] - s->Particle[i].X[j]);  
+      (double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
+      (double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - s->Particle[i].X[j]);  
     for(j=0; j<PSO_Dim; j++){  
       if(s->Particle[i].V[j]>s->Vmax[j])
         s->Particle[i].V[j] = s->Vmax[j];  
@@ -373,8 +380,8 @@ void PSO_UpdateofVandX(){
         s->Particle[i].X[j]=s->Xup[j];  
       if(s->Particle[i].X[j]<s->Xdown[j])  
         s->Particle[i].X[j]=s->Xdown[j];  
-    }  
-    //printf(" %.2f %.2f \n",s->Particle[i].X[0],s->Particle[i].X[1]);  
+	  cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+    }   
   }  
 }
 
