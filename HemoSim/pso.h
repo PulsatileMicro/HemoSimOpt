@@ -26,20 +26,26 @@ typedef struct SWARM{
   double Xup[PSO_Dim];
   double Xdown[PSO_Dim];
   double Vmax[PSO_Dim];
+  double Alpha;
+  double MeanX[PSO_Dim];
 }swarm;  
 
 void    PSO_RandInitofSwarm(void);
 void    PSO_PriesInitofSwarm(void); 
 void    PSO_ComputFitofSwarm(int, int);
 void    PSO_FirstComputPandGbest(void);  
-void    PSO_UpdateofVandX(void);  
+void    PSO_UpdateofVandX(void);
+void	PSO_UpdateofVandX_CompressMutation(void);
+void	PSO_UpdateofVandX_QuantumBehavior(int);
 void    PSO_ModifyVandX(int i);
-void    PSO_UpdatePandGbest(void);  
+void    PSO_UpdatePandGbest(void);
+void    PSO_UpdatePandGbest_SelectBehavior(void);  
 
 double  PSO_InertWeight(void);  
 int     PSO_CriteriaofStop(void);
 double  PSO_ComputAFitness(double X[]);
-
+void	PSO_QuickSort(particle[], int, int);
+int		PSO_QuickSortPartion(particle[], int, int);
 extern swarm *s;
 extern particle *p;
 
