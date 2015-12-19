@@ -13,11 +13,17 @@ public:
   static void initRandomAdapParam();
   static void setPara2PSO(double X[]);
 
+  enum OptCate{
+	NO_OPT=0,
+	PSO=1,
+	DOWNHILL=2,
+  };
   // 优化方法
   enum OptType{
-    NO_OPT=0,
-    PSO=1,
-    DOWNHILL=2,
+    STDPSO=0,
+	YSPSO=1,
+	SELPSO=2,
+	QUAPSO=3,
   };
 
   enum ErrType{
@@ -57,6 +63,7 @@ public:
   static double QRef;
 
   // Optimization type
+  static int optCate;
   static int optType;
   static double ErrorD, ErrorV, ErrorQ;
   static int errFlag;
