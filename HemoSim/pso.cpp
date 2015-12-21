@@ -127,7 +127,13 @@ void PSO_RandInitofSwarm(void){
 			s->Particle[i].X[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
 			s->Particle[i].V[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
 			cout << setprecision(6) << setw(15) << s->Particle[i].X[j];
-		}  
+			if (AdapParam::optType == AdapParam::SECPSO)
+			{
+				s->Particle[i].LastX[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
+				s->Particle[i].LastV[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
+				cout << setprecision(6) << setw(15) << s->Particle[i].LastV[j];
+			}
+		}
 	}  
 }
 
@@ -423,6 +429,36 @@ void PSO_UpdateofVandX_QuantumBehavior(int nIter){
 					Beita*abs(s->MeanX[j] - s->Particle[i].X[j])*log(1/pn);
 			}
 
+			if(s->Particle[i].X[j]>s->Xup[j])  
+				s->Particle[i].X[j]=s->Xup[j] - (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
+			if(s->Particle[i].X[j]<s->Xdown[j])  
+				s->Particle[i].X[j]=s->Xdown[j] + (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
+			cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+		}   
+	}
+}
+
+void PSO_UpdateofVandX_SecondBehavior(){
+	int i,j;  
+	srand((unsigned)time(NULL));  
+	for(i=0; i<PSO_PNum; i++){  
+		//printf(" The %dth of X is: ",i);  
+		for(j=0; j<PSO_Dim; j++)
+			s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
+		s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
+			(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j])+  
+			(double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j]);  
+		for(j=0; j<PSO_Dim; j++){  
+			double vb = (s->Xup-s->Xdown)*0.3;
+			if(s->Particle[i].V[j]>vb)
+				s->Particle[i].V[j] = vb - (double)rand()/(RAND_MAX + 1)*2*vb;  
+			if(s->Particle[i].V[j]<-vb)   
+				s->Particle[i].V[j] = -vb + (double)rand()/(RAND_MAX + 1)*2*vb;
+		}  
+
+		for(j=0; j<PSO_Dim; j++){  
+			s->Particle[i].LastX[j] = s->Particle[i].X[j];
+			s->Particle[i].X[j] += s->Particle[i].V[j];  
 			if(s->Particle[i].X[j]>s->Xup[j])  
 				s->Particle[i].X[j]=s->Xup[j] - (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
 			if(s->Particle[i].X[j]<s->Xdown[j])  
