@@ -6,28 +6,28 @@
 #define PSO_N     20    // 迭代次数
 
 typedef struct PARTICLE{
-  double X[PSO_Dim];
-  double PBest[PSO_Dim];
-  double V[PSO_Dim];
-  double LastX[PSO_Dim];    // 在更新前，保存上次的X和V，万一更新的粒子不能算出目标函数值，则需要回到上一次的值，重新计算新的X和V
-  double LastV[PSO_Dim];
-  double Fitness;
-  double PBestFitness;
-  int newFlag;              // 初始为0，如果该粒子是淘汰后新引入的，则计数加1
+	double X[PSO_Dim];
+	double PBest[PSO_Dim];
+	double V[PSO_Dim];
+	double LastX[PSO_Dim];    // 在更新前，保存上次的X和V，万一更新的粒子不能算出目标函数值，则需要回到上一次的值，重新计算新的X和V
+	double LastV[PSO_Dim];
+	double Fitness;
+	double PBestFitness;
+	int newFlag;              // 初始为0，如果该粒子是淘汰后新引入的，则计数加1
 }particle;
 
 typedef struct SWARM{  
-  particle Particle[PSO_PNum];
-  double GBestFitness;
-  double GBest[PSO_Dim];
-  double W;
-  double C1;
-  double C2;
-  double Xup[PSO_Dim];
-  double Xdown[PSO_Dim];
-  double Vmax[PSO_Dim];
-  double Alpha;
-  double MeanX[PSO_Dim];
+	particle Particle[PSO_PNum];
+	double GBestFitness;
+	double GBest[PSO_Dim];
+	double W;
+	double C1;
+	double C2;
+	double Xup[PSO_Dim];
+	double Xdown[PSO_Dim];
+	double Vmax[PSO_Dim];
+	double Alpha;
+	double MeanX[PSO_Dim];
 }swarm;  
 
 void    PSO_RandInitofSwarm(void);
