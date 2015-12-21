@@ -330,43 +330,6 @@ void PSO_ComputFitofSwarm(int isFirst, int nIter){
 		}
 		AdapParam::adapHemoFile.close();
 	}
-}
-
-void PSO_FirstComputPandGbest(void)  
-{  
-	int i,j;  
-	//P=X;  
-	for(i=0; i<PSO_PNum; i++){  
-		for(j=0;j<PSO_Dim;j++){  
-			s->Particle[i].PBest[j]=s->Particle[i].X[j];  
-		}  
-		s->Particle[i].PBestFitness = s->Particle[i].Fitness;
-	}  
-	//Computation of GBest  
-	for(i=0; i<PSO_PNum; i++)  
-		if(s->Particle[i].Fitness < s->GBestFitness){  
-			s->GBestFitness = s->Particle[i].Fitness;
-			for(j=0;j<PSO_Dim;j++){  
-				s->GBest[j]=s->Particle[i].X[j];
-			}
-		}
-
-		if (AdapParam::optType == AdapParam::QUAPSO)
-		{
-			for (j=0; j<PSO_Dim; j++)
-			{
-				double temp = 0;
-				for (i=0; i<PSO_PNum; i++)
-				{
-					temp += s->Particle[i].PBest[j];
-				}
-				s->MeanX[j] = temp/PSO_PNum;
-			}
-		}
-		cout<< "Fitness of GBest: " << s->GBestFitness <<endl;
-
-		AdapParam::adapGBestFile.open("Global_Best_Record.dat",ios::app);
-		AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
 }  
 
 void PSO_UpdateofVandX(){
@@ -493,19 +456,32 @@ void PSO_ModifyVandX(int i){
 	}  
 }
 
-void PSO_UpdatePandGbest(){
+void PSO_UpdatePandGbest( int nIter){
 	int i,j;
-	//update of P if the X is bigger than current P  
-	for (i = 0; i < PSO_PNum; i++){  
-		//printf(" The %dth of P is: ",i);  
-		if (s->Particle[i].Fitness <= s->Particle[i].PBestFitness){  
+	if ( nIter == 1 ) {
+		//P=X;  
+		for(i=0; i<PSO_PNum; i++){  
 			for(j=0;j<PSO_Dim;j++){  
-				s->Particle[i].PBest[j] = s->Particle[i].X[j];  
+				s->Particle[i].PBest[j]=s->Particle[i].X[j];  
 			}  
 			s->Particle[i].PBestFitness = s->Particle[i].Fitness;
+		}
+	}
+	else
+	{
+		//update of P if the X is bigger than current P  
+		for (i = 0; i < PSO_PNum; i++){  
+			//printf(" The %dth of P is: ",i);  
+			if (s->Particle[i].Fitness <= s->Particle[i].PBestFitness){  
+				for(j=0;j<PSO_Dim;j++){  
+					s->Particle[i].PBest[j] = s->Particle[i].X[j];  
+				}  
+				s->Particle[i].PBestFitness = s->Particle[i].Fitness;
+			}  
+			//printf(" %.2f %.2f \n",s->Particle[i].P[0],s->Particle[i].P[1]);  
 		}  
-		//printf(" %.2f %.2f \n",s->Particle[i].P[0],s->Particle[i].P[1]);  
-	}  
+	}
+	
 	//update of GBest  
 	for(i=0; i<PSO_PNum; i++)
 		// if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
@@ -515,7 +491,16 @@ void PSO_UpdatePandGbest(){
 				s->GBest[j]=s->Particle[i].PBest[j];
 			}
 		}
-		printf("Fitness of GBest:%.2f \n", s->GBestFitness);
+	cout<< "Fitness of GBest: " << setprecision(6) << setw(12) << s->GBestFitness <<endl;
+	if ( nIter == 1)
+	{
+		AdapParam::adapGBestFile.open("Global_Best_Record.dat",ios::app);
+		AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
+	} 
+	else
+	{
+		AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
+	}
 	//calc MeanX
 	if (AdapParam::optType == AdapParam::QUAPSO)
 	{
@@ -539,8 +524,6 @@ void PSO_UpdatePandGbest(){
 			}
 		}
 	}
-		  
-	AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
 }
 
 static double PSO_ComputAFitness(double X[])  
