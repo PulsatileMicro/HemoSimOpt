@@ -161,15 +161,15 @@ void Adap_SS_Solver::initSolver(){
 	AdapParam::optCate=AdapParam::PSO;
 	if (!strncmp(ModelParam::argv[ModelParam::argc-2], "STDPSO",6))
 	{
-		AdapParam::optType = AdapParam::STDPSO;
+		AdapParam::optMethod = AdapParam::STDPSO;
 	} 
 	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "CMPPSO",6))
 	{
-		AdapParam::optType = AdapParam::CMPPSO;
+		AdapParam::optMethod = AdapParam::CMPPSO;
 	}
 	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "QUAPSO",6))
 	{
-		AdapParam::optType = AdapParam::QUAPSO;
+		AdapParam::optMethod = AdapParam::QUAPSO;
 	}
 	else{
 		cout << "connot figure out adapParam::optType!" << endl;
@@ -213,7 +213,7 @@ void Adap_SS_Solver::solve(){
 			//printf("Replaced of P and Gbest:\n\n");  
 			PSO_UpdatePandGbest(n);
 			//printf("Updated of the swarm:\n\n"); 
-			switch(AdapParam::optType){
+			switch(AdapParam::optMethod){
 				case AdapParam::STDPSO:
 					PSO_UpdateofVandX();
 					break;
