@@ -5,7 +5,7 @@
 #include <ctype.h>
 
 void PreProcessor::run(int argc, char *argv[]){
-  char buf[BUFSIZE], *bf, *infile;   /* buf: character string with the name of the input file ".in";
+  char buf[BUFSIZE], *bf, *infile, *optMethod;   /* buf: character string with the name of the input file ".in";
                                      "BUFSIZ = 1024" (defined in all the standard library
                                      routines) is the number of characters into the array "buf".
                                      infile: pointer to the string of the name of the input file ".in" */

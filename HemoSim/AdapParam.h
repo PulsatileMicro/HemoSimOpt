@@ -21,7 +21,7 @@ public:
   // 优化方法
   enum OptType{
     STDPSO=0,
-	YSPSO=1,
+	CMPPSO=1,
 	SELPSO=2,
 	QUAPSO=3,
   };
