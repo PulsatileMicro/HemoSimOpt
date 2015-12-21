@@ -38,7 +38,7 @@ double AdapParam::LRef2[3];
 
 // Optimization type
 int	AdapParam::optCate;
-int AdapParam::optType;
+int AdapParam::optMethod;
 double AdapParam::ErrorD=0.0;
 double AdapParam::ErrorV=0.0;
 double AdapParam::ErrorQ=0.0;

@@ -127,7 +127,7 @@ void PSO_RandInitofSwarm(void){
 			s->Particle[i].X[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
 			s->Particle[i].V[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
 			cout << setprecision(6) << setw(15) << s->Particle[i].X[j];
-			if (AdapParam::optType == AdapParam::SECPSO)
+			if (AdapParam::optMethod == AdapParam::SECPSO)
 			{
 				s->Particle[i].LastX[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
 				s->Particle[i].LastV[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
@@ -538,7 +538,7 @@ void PSO_UpdatePandGbest( int nIter){
 		AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
 	}
 	//calc MeanX
-	if (AdapParam::optType == AdapParam::QUAPSO)
+	if (AdapParam::optMethod == AdapParam::QUAPSO)
 	{
 		for (j=0; j<PSO_Dim; j++)
 		{
@@ -549,7 +549,7 @@ void PSO_UpdatePandGbest( int nIter){
 			}
 			s->MeanX[j] = temp/PSO_PNum;
 		}
-	}else if (AdapParam::optType == AdapParam::SELPSO)
+	}else if (AdapParam::optMethod == AdapParam::SELPSO)
 	{
 		PSO_QuickSort(s->Particle, 0, PSO_PNum);
 		for (i=0; i<PSO_PNum/2; i++)

@@ -65,7 +65,7 @@ public:
 
 	// Optimization type
 	static int optCate;
-	static int optType;
+	static int optMethod;
 	static double ErrorD, ErrorV, ErrorQ;
 	static int errFlag;
 	static int AdapErrCnt;
