@@ -159,6 +159,22 @@ void Adap_SS_Solver::initSolver(){
 	}
 
 	AdapParam::optCate=AdapParam::PSO;
+	if (!strncmp(ModelParam::argv[ModelParam::argc-2], "STDPSO",6))
+	{
+		AdapParam::optType = AdapParam::STDPSO;
+	} 
+	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "CMPPSO",6))
+	{
+		AdapParam::optType = AdapParam::CMPPSO;
+	}
+	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "QUAPSO",6))
+	{
+		AdapParam::optType = AdapParam::QUAPSO;
+	}
+	else{
+		cout << "connot figure out adapParam::optType!" << endl;
+		exit(EXIT_FAILURE);
+	}
 	AdapParam::adapLogFile.open("adap_results.txt");
 	if(ModelParam::solverType==ModelParam::Adap_SS_Wall){
 		AdapParam::adapLogFile << setw(15) << "Particle_ID" << setw(15) << "ErrorV" << setw(15) << "ErrorD" 
@@ -200,7 +216,7 @@ void Adap_SS_Solver::solve(){
 				case AdapParam::STDPSO:
 					//PSO_UpdateofVandX();
 					break;
-				case AdapParam::YSPSO:
+				case AdapParam::CMPPSO:
 					PSO_UpdateofVandX_CompressMutation();
 					break;
 				case AdapParam::QUAPSO:
