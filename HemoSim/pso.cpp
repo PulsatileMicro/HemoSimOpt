@@ -355,7 +355,7 @@ void PSO_FirstComputPandGbest(void)
 		{
 			for (j=0; j<PSO_Dim; j++)
 			{
-				double temp;
+				double temp = 0;
 				for (i=0; i<PSO_PNum; i++)
 				{
 					temp += s->Particle[i].PBest[j];
@@ -521,7 +521,7 @@ void PSO_UpdatePandGbest(){
 	{
 		for (j=0; j<PSO_Dim; j++)
 		{
-			double temp;
+			double temp = 0;
 			for (i=0; i<PSO_PNum; i++)
 			{
 				temp += s->Particle[i].PBest[j];
