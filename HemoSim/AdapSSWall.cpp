@@ -214,7 +214,7 @@ void Adap_SS_Solver::solve(){
 			//printf("Updated of the swarm:\n\n"); 
 			switch(AdapParam::optType){
 				case AdapParam::STDPSO:
-					//PSO_UpdateofVandX();
+					PSO_UpdateofVandX();
 					break;
 				case AdapParam::CMPPSO:
 					PSO_UpdateofVandX_CompressMutation();
