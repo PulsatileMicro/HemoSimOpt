@@ -204,13 +204,14 @@ void Adap_SS_Solver::solve(){
 		// PSO_PriesInitofSwarm();
 
 		// Start Iteration
-		AdapParam::adapLogFile << "Iteration 1" << endl;
-		PSO_ComputFitofSwarm(0,n);
-		PSO_FirstComputPandGbest();
 		while(n++!=PSO_N)
 		{  
-			AdapParam::adapLogFile << "Iteration " << n+1 << endl;
-			printf("The %dth time to calculate .\n",n );
+			AdapParam::adapLogFile << "Iteration " << n << endl;
+			printf("The %dth time to calculate .\n", n);
+			//printf("Updated of the swarm's Fitness:\n");  
+			PSO_ComputFitofSwarm(0,n);
+			//printf("Replaced of P and Gbest:\n\n");  
+			PSO_UpdatePandGbest(n);
 			//printf("Updated of the swarm:\n\n"); 
 			switch(AdapParam::optType){
 				case AdapParam::STDPSO:
@@ -223,11 +224,6 @@ void Adap_SS_Solver::solve(){
 					PSO_UpdateofVandX_QuantumBehavior(n);
 					break;
 			}
-			//printf("Updated of the swarm's Fitness:\n");  
-			PSO_ComputFitofSwarm(0,n);
-			//printf("Replaced of P and Gbest:\n\n");  
-			PSO_UpdatePandGbest();
-
 			printf("AdapErrCnt=%d\n", AdapParam::AdapErrCnt);
 		}  
 		break;
