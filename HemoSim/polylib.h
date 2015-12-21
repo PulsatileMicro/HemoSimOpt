@@ -1,6 +1,6 @@
 /*
- *  LIBRARY ROUTINES FOR POLYNOMIAL CALCULUS AND INTERPOLATION
- */
+*  LIBRARY ROUTINES FOR POLYNOMIAL CALCULUS AND INTERPOLATION
+*/
 
 #ifndef PLYLIB_H  
 #define PLYLIB_H
@@ -10,8 +10,8 @@
 #endif
 
 /*-----------------------------------------------------------------------
-                         M A I N     R O U T I N E S
-  -----------------------------------------------------------------------*/
+M A I N     R O U T I N E S
+-----------------------------------------------------------------------*/
 
 /* Points and weights */
 
@@ -43,8 +43,8 @@ void jacobf (int, double *, double *, int, double, double);
 void jacobd (int, double *, double *, int, double, double);
 
 /*-----------------------------------------------------------------------
-                         M A C R O S
-  -----------------------------------------------------------------------*/
+M A C R O S
+-----------------------------------------------------------------------*/
 
 /* Points and weights */
 

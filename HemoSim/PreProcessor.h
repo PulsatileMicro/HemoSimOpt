@@ -17,16 +17,16 @@ class Element;
 
 class PreProcessor{
 public:
-  void    run(int argc, char *argv[]);
+	void    run(int argc, char *argv[]);
 
 private:
-  void    ReadParams(FILE *fp);
-  char    *findSection(char *name, char *buf, FILE *fp);
-  Element *Setup(FILE *fp, int *nel, Domain &omega_, int n);
-  void    ReadBC(int Ndoms, int nvar, Domain *omega, FILE *fp);
-  void    SortNode(Domain *omega);
-  Element *CopyElmt(Element *U,int nel);
-  void    ReadIC(int Ndoms, int nfields, Domain *omega, FILE *fp);
+	void    ReadParams(FILE *fp);
+	char    *findSection(char *name, char *buf, FILE *fp);
+	Element *Setup(FILE *fp, int *nel, Domain &omega_, int n);
+	void    ReadBC(int Ndoms, int nvar, Domain *omega, FILE *fp);
+	void    SortNode(Domain *omega);
+	Element *CopyElmt(Element *U,int nel);
+	void    ReadIC(int Ndoms, int nfields, Domain *omega, FILE *fp);
 };
 
 /* Function found in Basis.C */

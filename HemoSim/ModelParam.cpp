@@ -3,7 +3,7 @@
 #include <math.h>
 
 /*!
-  \brief Initialization of the static variables
+\brief Initialization of the static variables
 */
 double ModelParam::dt=1e-3;
 double ModelParam::rho=1050;
