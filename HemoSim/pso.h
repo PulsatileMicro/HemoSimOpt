@@ -37,6 +37,7 @@ void    PSO_FirstComputPandGbest(void);
 void    PSO_UpdateofVandX(void);
 void	PSO_UpdateofVandX_CompressMutation(void);
 void	PSO_UpdateofVandX_QuantumBehavior(int);
+void	PSO_UpdateofVandX_SecondBehavior(void);
 void    PSO_ModifyVandX(int i);
 void    PSO_UpdatePandGbest(int);
 void    PSO_UpdatePandGbest_SelectBehavior(void);  

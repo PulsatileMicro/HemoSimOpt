@@ -223,6 +223,9 @@ void Adap_SS_Solver::solve(){
 				case AdapParam::QUAPSO:
 					PSO_UpdateofVandX_QuantumBehavior(n);
 					break;
+				case AdapParam::SECPSO:
+					PSO_UpdateofVandX_SecondBehavior();
+					break;
 			}
 			printf("AdapErrCnt=%d\n", AdapParam::AdapErrCnt);
 		}  
