@@ -209,7 +209,7 @@ void Adap_SS_Solver::solve(){
 			AdapParam::adapLogFile << "Iteration " << n << endl;
 			printf("The %dth time to calculate .\n", n);
 			//printf("Updated of the swarm's Fitness:\n");  
-			PSO_ComputFitofSwarm(0,n);
+			PSO_ComputFitofSwarm(n);
 			//printf("Replaced of P and Gbest:\n\n");  
 			PSO_UpdatePandGbest(n);
 			//printf("Updated of the swarm:\n\n"); 

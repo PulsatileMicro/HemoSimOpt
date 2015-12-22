@@ -255,7 +255,7 @@ void PSO_PriesInitofSwarm(void){
 	}
 }
 
-void PSO_ComputFitofSwarm(int isFirst, int nIter){
+void PSO_ComputFitofSwarm(int nIter){
 	int i,j;
 	LARGE_INTEGER tick;
 	LARGE_INTEGER timestamp;
@@ -269,50 +269,29 @@ void PSO_ComputFitofSwarm(int isFirst, int nIter){
 		QueryPerformanceCounter(&timestamp);
 		unsigned int us=(unsigned int)(timestamp.QuadPart % tick.QuadPart)*1E6/tick.QuadPart;
 		srand(us);*/
-		if(isFirst){
-			// 尝试随机化的粒子，直到能够计算出适应度函数
-			do{
-				// 随机化粒子及速度
-				for(j=0; j<PSO_Dim; j++){
-					s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
-					s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
-				}
-				// printf("Bad particle\n");
-				// Debug
-				/*for(j=0;j<PSO_Dim;j++)
-				AdapParam::adapLogFile << setprecision(6) << setw(15) << s->Particle[i].X[j];
-				AdapParam::adapLogFile << endl;*/
-
-				// 尝试计算适应度函数
-				AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
-			}while(FALSE);
-			if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
-			{
-				AdapParam::ErrorV = -AdapParam::ErrorV;
+		
+		AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
+		
+#ifdef NOADAPERR
+		// 如果更新后的粒子计算不出目标值，则淘汰该粒子，引入新粒子，直至能够计算出目标值
+		while(AdapParam::errFlag != AdapParam::NO_ADAP_ERR){
+		// 随机化粒子及速度
+			for(j=0; j<PSO_Dim; j++){
+				s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
+				s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
 			}
+			AdapParam::ErrorV = PSO_ComputAFitness(s->Particle[i].X);
 		}
-		else{
-			// 不是第一次，则尝试计算适应度函数
-			AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
-			// 如果更新后的粒子计算不出目标值，则淘汰该粒子，引入新粒子，直至能够计算出目标值
-			//while(AdapParam::errFlag!=AdapParam::NO_ADAP_ERR){
-			//  // 随机化粒子及速度
-			//  for(j=0; j<PSO_Dim; j++){
-			//    s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
-			//    s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
-			//  }
-			//  AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
-			//}
-			if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
-			{
-				AdapParam::ErrorV = -AdapParam::ErrorV;
-			}
+		if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
+		{
+			AdapParam::ErrorV = -AdapParam::ErrorV;
 		}
+#endif
 
-		printf("Particle, The Fitness of %dth Particle: ",i);
+		printf("Particle, The Fitness of %dth Particle: ",i+1);
 		// s->Particle[i].Fitness = AdapParam::ErrorD;
 		s->Particle[i].Fitness = AdapParam::ErrorV;
-		if (i == 0)
+		if ( nIter == 1 && i == 0)
 		{
 			s->GBestFitness = s->Particle[i].Fitness;
 		}
@@ -327,7 +306,7 @@ void PSO_ComputFitofSwarm(int isFirst, int nIter){
 		AdapParam::adapLogFile << endl;
 
 		// 对第nIter次迭代的第i个粒子，记录仿真结果
-		sprintf(str,"AdapResult_Iter%02d_Par%02d.dat",nIter,i);
+		sprintf(str,"AdapResult_Iter%02d_Par%02d.dat",nIter,i+1);
 		AdapParam::adapHemoFile.open(str);
 		for(j=0;j<ModelParam::Ndoms;j++){
 			AdapParam::adapHemoFile << setw(12) << j << setw(12) << sqrt(4*ModelParam::omega[j].A[0].h[0]/ModelParam::PI)*1e6 

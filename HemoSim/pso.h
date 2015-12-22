@@ -4,6 +4,7 @@
 #define PSO_Dim   8     // 每个粒子的维度 13 or 8
 #define PSO_PNum  20    // 粒子数量
 #define PSO_N     20    // 迭代次数
+#define NOADAPERR TRUE	// 每个粒子必须计算出结果
 
 typedef struct PARTICLE{
 	double X[PSO_Dim];
@@ -32,7 +33,7 @@ typedef struct SWARM{
 
 void    PSO_RandInitofSwarm(void);
 void    PSO_PriesInitofSwarm(void); 
-void    PSO_ComputFitofSwarm(int, int);
+void    PSO_ComputFitofSwarm(int);
 void    PSO_FirstComputPandGbest(void);  
 void    PSO_UpdateofVandX(void);
 void	PSO_UpdateofVandX_CompressMutation(void);
