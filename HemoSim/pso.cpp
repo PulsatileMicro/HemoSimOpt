@@ -297,23 +297,26 @@ void PSO_ComputFitofSwarm(int nIter){
 		}
 		cout << setprecision(6) << setw(15) << s->Particle[i].Fitness << endl;
 
-		// 将Good Particle及其对应的Fitness value写入文件记录
-		AdapParam::adapLogFile << setw(15) << i << setprecision(6) << setw(15) << AdapParam::ErrorV
-			<< setprecision(6) << setw(15) << AdapParam::ErrorD 
-			<< setprecision(6) << setw(15) << AdapParam::ErrorQ;
-		for(j=0;j<PSO_Dim;j++)
-			AdapParam::adapLogFile << setprecision(6) << setw(15) << s->Particle[i].X[j];
-		AdapParam::adapLogFile << endl;
+		if (AdapParam::errFlag == AdapParam::NO_ADAP_ERR)
+		{
+			// 将Good Particle及其对应的Fitness value写入文件记录
+			AdapParam::adapLogFile << setw(15) << i << setprecision(6) << setw(15) << AdapParam::ErrorV
+				<< setprecision(6) << setw(15) << AdapParam::ErrorD 
+				<< setprecision(6) << setw(15) << AdapParam::ErrorQ;
+			for(j=0;j<PSO_Dim;j++)
+				AdapParam::adapLogFile << setprecision(6) << setw(15) << s->Particle[i].X[j];
+			AdapParam::adapLogFile << endl;
 
-		// 对第nIter次迭代的第i个粒子，记录仿真结果
-		sprintf(str,"AdapResult_Iter%02d_Par%02d.dat",nIter,i+1);
-		AdapParam::adapHemoFile.open(str);
-		for(j=0;j<ModelParam::Ndoms;j++){
-			AdapParam::adapHemoFile << setw(12) << j << setw(12) << sqrt(4*ModelParam::omega[j].A[0].h[0]/ModelParam::PI)*1e6 
-				<< setw(12) << ModelParam::omega[j].WallTh*1e6 << setw(12) << Adap_SS_Solver::Debug_MeanP[j] 
-			<< setw(12) << Adap_SS_Solver::Debug_MeanQ[j] << endl;
+			// 对第nIter次迭代的第i个粒子，记录仿真结果
+			sprintf(str,"AdapResult_Iter%02d_Par%02d.dat",nIter,i+1);
+			AdapParam::adapHemoFile.open(str);
+			for(j=0;j<ModelParam::Ndoms;j++){
+				AdapParam::adapHemoFile << setw(12) << j << setw(12) << sqrt(4*ModelParam::omega[j].A[0].h[0]/ModelParam::PI)*1e6 
+					<< setw(12) << ModelParam::omega[j].WallTh*1e6 << setw(12) << Adap_SS_Solver::Debug_MeanP[j] 
+				<< setw(12) << Adap_SS_Solver::Debug_MeanQ[j] << endl;
+			}
+			AdapParam::adapHemoFile.close();
 		}
-		AdapParam::adapHemoFile.close();
 	}
 }  
 

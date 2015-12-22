@@ -3,8 +3,8 @@
 
 #define PSO_Dim   8     // 每个粒子的维度 13 or 8
 #define PSO_PNum  20    // 粒子数量
-#define PSO_N     20    // 迭代次数
-#define NOADAPERR TRUE	// 每个粒子必须计算出结果
+#define PSO_N     10000    // 迭代次数
+//#define NOADAPERR TRUE	// 每个粒子必须计算出结果
 
 typedef struct PARTICLE{
 	double X[PSO_Dim];
