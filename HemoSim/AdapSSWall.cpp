@@ -25,9 +25,9 @@ char   **Adap_SS_Solver::org_bctype=NULL;
 int   ***Adap_SS_Solver::org_bifur=NULL;
 FILE    **Adap_SS_Solver::fp_his;
 int     Adap_SS_Solver::sortCnt=1;
-double  Adap_SS_Solver::dDmTOL=1e-6;
-double  Adap_SS_Solver::dAwTOL=1e-6;
-double  Adap_SS_Solver::StotTOL=1e-8;
+double  Adap_SS_Solver::dDmTOL=1e-3; /*ΩµµÕ ’¡≤“™«Û*/
+double  Adap_SS_Solver::dAwTOL=1e-3;
+double  Adap_SS_Solver::StotTOL=1e-5;
 int     Adap_SS_Solver::logerr=0;
 
 vector<double> Adap_SS_Solver::Dm;
