@@ -300,7 +300,8 @@ void PSO_ComputFitofSwarm(int nIter){
 		if (AdapParam::errFlag == AdapParam::NO_ADAP_ERR)
 		{
 			// 将Good Particle及其对应的Fitness value写入文件记录
-			AdapParam::adapLogFile << setw(15) << i << setprecision(6) << setw(15) << AdapParam::ErrorV
+			AdapParam::adapLogFile << setw(15) << i << setw(15) << AdapParam::errFlag
+				<< setprecision(6) << setw(15) << AdapParam::ErrorV
 				<< setprecision(6) << setw(15) << AdapParam::ErrorD 
 				<< setprecision(6) << setw(15) << AdapParam::ErrorQ;
 			for(j=0;j<PSO_Dim;j++)
