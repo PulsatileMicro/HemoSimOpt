@@ -12,6 +12,10 @@
 #include "PreProcessor.h"
 using namespace std;
 
+//#ifndef _DEBUG
+//#	define _DEBUG
+//#endif
+
 double  **Adap_SS_Solver::JMat=NULL;
 double  *Adap_SS_Solver::NodeFlow=NULL;
 double  *Adap_SS_Solver::SS_Press=NULL;
@@ -316,7 +320,9 @@ int Adap_SS_Solver::AdapObjFunc()
 			// TODO: 使用MATLAB代码中的modifyViscosity函数
 			for(n=0;n<ModelParam::Ndoms;++n)
 				lastVisc[n]=ModelParam::omega[n].visc[0];
+#ifdef _DEBUG
 			cout << "ViscLoop=" << loop1_cnt << " MaxViscErr=" << maxViscErr;
+#endif // _DEBUG
 		}
 
 		if(AdapParam::errFlag)
@@ -473,7 +479,9 @@ int Adap_SS_Solver::AdapObjFunc()
 		}
 	}
 	// 自适应循环结束
+#ifdef _DEBUG
 	cout << " AdapLoop=" << loop2_cnt << " last_mean_Stot=" << last_mean_Stot << endl;
+#endif // _DEBUG
 
 	if(loop2_cnt==loop2_adap_num){
 		AdapParam::errFlag=AdapParam::NO_CONV;
