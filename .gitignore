@@ -234,3 +234,4 @@ _Pvt_Extensions
 ##this project 
 *.dat
 adap_results.txt
+*.sln
