@@ -45,7 +45,7 @@ void    PSO_UpdatePandGbest_SelectBehavior(void);
 
 double  PSO_InertWeight(void);  
 int     PSO_CriteriaofStop(void);
-double  PSO_ComputAFitness(double X[]);
+double  PSO_ComputFitnessWithGivenParams(double X[]);
 void	PSO_QuickSort(particle[], int, int);
 int		PSO_QuickSortPartion(particle[], int, int);
 extern swarm *s;

@@ -145,11 +145,12 @@ int main(int argc, char *argv[]){
 			Steady state model for simulating structural adaptation
 			*/
 		case ModelParam::Adap_SS_NoWall:
-		case ModelParam::Adap_SS_Wall:
+		case ModelParam::Adap_SS_Wall:{
 			Adap_SS_Solver::initSolver();
 			Adap_SS_Solver::solve();
 			Adap_SS_Solver::destroySolver();
 			break;
+		}
 		default:
 			break;
 	}

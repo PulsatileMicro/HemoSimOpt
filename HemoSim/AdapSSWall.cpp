@@ -106,8 +106,6 @@ void Adap_SS_Solver::initSolver(){
 		Nmarker[i]=0;
 	}
 
-	AdapParam::initPriesAdapParam();
-
 	for(i=0;i<ModelParam::Ndoms;i++){
 		lastVisc.push_back(0.0);
 		MeanQ.push_back(0.0);
@@ -203,7 +201,7 @@ void Adap_SS_Solver::solve(){
 	AdapParam::AdapErrCnt=0;
 	switch(AdapParam::optCate){
 	case AdapParam::PSO:
-		AdapParam::initRandomAdapParam();   // 初始化自适应参数
+		AdapParam::set_model_coeff_bounds(5, 0.2);   // 初始化自适应参数
 		PSO_RandInitofSwarm();              // 初始化PSO参数
 		// PSO_PriesInitofSwarm();
 
@@ -236,10 +234,10 @@ void Adap_SS_Solver::solve(){
 		break;
 	case AdapParam::DOWNHILL:
 		break;
-	case AdapParam::NO_OPT:
+	/*case AdapParam::NO_OPT:
 		AdapParam::initPriesAdapParam();
 		AdapObjFunc();
-		break;
+		break;*/
 	default:
 		break;
 	}

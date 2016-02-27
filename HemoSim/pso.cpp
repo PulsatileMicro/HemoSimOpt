@@ -270,7 +270,7 @@ void PSO_ComputFitofSwarm(int nIter){
 		unsigned int us=(unsigned int)(timestamp.QuadPart % tick.QuadPart)*1E6/tick.QuadPart;
 		srand(us);*/
 		
-		AdapParam::ErrorV=PSO_ComputAFitness(s->Particle[i].X);
+		AdapParam::ErrorV=PSO_ComputFitnessWithGivenParams(s->Particle[i].X);
 		
 #ifdef NOADAPERR
 		// 如果更新后的粒子计算不出目标值，则淘汰该粒子，引入新粒子，直至能够计算出目标值
@@ -280,7 +280,7 @@ void PSO_ComputFitofSwarm(int nIter){
 				s->Particle[i].X[j] = rand()/(double)RAND_MAX*(s->Xup[j]-s->Xdown[j])+s->Xdown[j];
 				s->Particle[i].V[j] = rand()/(double)RAND_MAX*s->Vmax[j]*2-s->Vmax[j];
 			}
-			AdapParam::ErrorV = PSO_ComputAFitness(s->Particle[i].X);
+			AdapParam::ErrorV = PSO_ComputFitnessWithGivenParams(s->Particle[i].X);
 		}
 		if (AdapParam::errFlag != AdapParam::NO_ADAP_ERR && AdapParam::ErrorV < 0)
 		{
@@ -503,7 +503,7 @@ void PSO_UpdatePandGbest( int nIter){
 	
 	//update of GBest  
 	for(i=0; i<PSO_PNum; i++)
-		// if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
+		// if(PSO_ComputFitnessWithGivenParams(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
 		if(s->Particle[i].PBestFitness <= s->GBestFitness){
 			s->GBestFitness = s->Particle[i].PBestFitness;
 			for(j=0;j<PSO_Dim;j++){
@@ -545,9 +545,9 @@ void PSO_UpdatePandGbest( int nIter){
 	}
 }
 
-static double PSO_ComputAFitness(double X[])  
+static double PSO_ComputFitnessWithGivenParams(double X[])  
 {  
-	AdapParam::setPara2PSO(X);
+	AdapParam::set_model_coeffs(X);
 	int errType=Adap_SS_Solver::AdapObjFunc();
 	// return AdapParam::ErrorD;
 	return AdapParam::ErrorV;

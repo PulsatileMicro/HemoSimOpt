@@ -8,10 +8,9 @@ class AdapParam{
 public:
 	AdapParam() {}
 	~AdapParam() {}
-
-	static void initPriesAdapParam();
-	static void initRandomAdapParam();
-	static void setPara2PSO(double X[]);
+	static void init_Preis_adap_params();
+	static void set_model_coeff_bounds(const int coeff_k, const float coeff_bio);
+	static void set_model_coeffs(double X[]);
 
 	enum OptCate{
 		NO_OPT=0,

@@ -52,7 +52,7 @@ ofstream AdapParam::adapLogFile;
 ofstream AdapParam::adapHemoFile;
 ofstream AdapParam::adapGBestFile;
 
-void AdapParam::initPriesAdapParam(){
+void AdapParam::init_Preis_adap_params(){
 	// For wall adaptation
 	PO2Ref[0]   = 94.4;       // mmHg
 	kc[0]       = 1.66;
@@ -83,11 +83,7 @@ void AdapParam::initPriesAdapParam(){
 	QRef=0.001;
 }
 
-void AdapParam::initRandomAdapParam(){
-	// 以Pries的参数为起点，设置一定范围进行随机取值
-	initPriesAdapParam();
-
-	int var=5;
+void AdapParam::set_model_coeff_bounds(const int coeff_k, const float coeff_bio){
 	// 阈值
 	PO2Ref[1]   = 96;       // mmHg
 	PO2Ref[2]   = 94;
@@ -111,48 +107,48 @@ void AdapParam::initRandomAdapParam(){
 	kmd[2]      = 0;
 	kmg[1]      = +2;
 	kmg[2]      = -2;
-	ksd[1]      = +var;
-	ksd[2]      = -var;
-	ksg[1]      = +var;
-	ksg[2]      = -var;
-	kwtau[1]    = +var;
+	ksd[1]      = +coeff_k;
+	ksd[2]      = -coeff_k;
+	ksg[1]      = +coeff_k;
+	ksg[2]      = -coeff_k;
+	kwtau[1]    = +coeff_k;
 	kwtau[2]    = 0;
-	kwsigma[1]  = +var;
+	kwsigma[1]  = +coeff_k;
 	kwsigma[2]  = 0;
-	tauRef[1]   = tauRef[0]*1.2;
-	tauRef[2]   = tauRef[0]*0.8;
-	sigmaRef[1] = sigmaRef[0]*1.2;
-	sigmaRef[2] = sigmaRef[0]*0.8;
-	wRef[1]     = wRef[0]*1.2;
-	wRef[2]     = wRef[0]*0.8;
-	J0[1]       = J0[0]*1.2;
-	J0[2]       = J0[0]*0.8;
-	LRef[1]     = LRef[0]*1.2;      // um
-	LRef[2]     = LRef[0]*0.8;      // um
+	tauRef[1]   = tauRef[0]*(1+coeff_bio);
+	tauRef[2]   = tauRef[0]*(1-coeff_bio);
+	sigmaRef[1] = sigmaRef[0]*(1+coeff_bio);
+	sigmaRef[2] = sigmaRef[0]*(1-coeff_bio);
+	wRef[1]     = wRef[0]*(1+coeff_bio);
+	wRef[2]     = wRef[0]*(1-coeff_bio);
+	J0[1]       = J0[0]*(1+coeff_bio);
+	J0[2]       = J0[0]*(1-coeff_bio);
+	LRef[1]     = LRef[0]*(1+coeff_bio);      // um
+	LRef[2]     = LRef[0]*(1-coeff_bio);      // um
 
 	// For no wall adaptation
 	kc2[1]=3;
 	kc2[2]=0;
-	kp2[1]=0.68+var;
+	kp2[1]=0.68+coeff_k;
 	kp2[2]=0;
 	km2[1]=2;
 	km2[2]=0.25;
-	ks2[1]=1.72+var;
+	ks2[1]=1.72+coeff_k;
 	ks2[2]=0;
-	J02[1]=J02[0]*1.2;
-	J02[2]=J02[0]*0.8;
-	LRef2[1]=LRef2[0]*1.2;           // um
-	LRef2[2]=LRef2[0]*0.8;
-	tauRef2[1]=tauRef2[0]*1.2;         // dyn/cm2
-	tauRef2[2]=tauRef2[0]*0.8;         // dyn/cm2
-	QRef2[1]=QRef2[0]*1.2;           // nl/min
-	QRef2[2]=QRef2[0]*0.8;
+	J02[1]=J02[0]*(1+coeff_bio);
+	J02[2]=J02[0]*(1-coeff_bio);
+	LRef2[1]=LRef2[0]*(1+coeff_bio);           // um
+	LRef2[2]=LRef2[0]*(1-coeff_bio);
+	tauRef2[1]=tauRef2[0]*(1+coeff_bio);         // dyn/cm2
+	tauRef2[2]=tauRef2[0]*(1-coeff_bio);         // dyn/cm2
+	QRef2[1]=QRef2[0]*(1+coeff_bio);           // nl/min
+	QRef2[2]=QRef2[0]*(1-coeff_bio);
 }
 
 /*
 \brief 将第i个粒子的值赋值给kc[0]等变量
 */
-void AdapParam::setPara2PSO(double X[]){
+void AdapParam::set_model_coeffs(double X[]){
 	if(ModelParam::solverType==ModelParam::Adap_SS_Wall){
 		// For wall adaptation
 		PO2Ref[0]   = X[0];
