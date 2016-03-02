@@ -10,6 +10,7 @@ public:
 	~AdapParam() {}
 
 	static void initPriesAdapParam();
+	static void initYJLAdapParam();
 	static void initRandomAdapParam();
 	static void setPara2PSO(double X[]);
 

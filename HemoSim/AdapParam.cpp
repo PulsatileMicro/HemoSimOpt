@@ -83,9 +83,40 @@ void AdapParam::initPriesAdapParam(){
 	QRef=0.001;
 }
 
+void AdapParam::initYJLAdapParam(){
+	// For wall adaptation
+	PO2Ref[0]   = 94.4;       // mmHg
+	kc[0]       = 1.66;
+	kmd[0]      = 0.955;
+	kmg[0]      = -0.374;
+	ksd[0]      = 3.077;
+	ksg[0]      = 0.0177;
+	kwtau[0]    = 0.114;
+	kwsigma[0]  = 0.609;
+	tauRef[0]   = 0.5598;     // dyn/cm2
+	sigmaRef[0] = 32050;      // dyn/cm2
+	wRef[0]     = 0.804;      // um
+	J0[0]       = 6618;
+	LRef[0]     = 14292;      // um
+
+	// For no wall adaptation
+	kc2[0]=2.12749;
+	kp2[0]=0.21808;
+	km2[0]=0.784955;
+	ks2[0]=2.79588;
+	J02[0]=31.36;
+	LRef2[0]=20164;           // um
+	tauRef2[0]=0.110094;         // dyn/cm2
+	QRef2[0]=0.219394;           // nl/min
+
+	// 其它自适应计算相关的参数
+	dt=0.1;
+	QRef=0.001;
+}
+
 void AdapParam::initRandomAdapParam(){
 	// 以Pries的参数为起点，设置一定范围进行随机取值
-	initPriesAdapParam();
+	initYJLAdapParam();
 
 	int var=5;
 	// 阈值
