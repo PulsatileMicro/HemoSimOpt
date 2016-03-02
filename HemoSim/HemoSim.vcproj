@@ -367,6 +367,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\psa.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pso.cpp"
 				>
 			</File>
@@ -434,6 +438,10 @@
 			</File>
 			<File
 				RelativePath=".\PreProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\psa.h"
 				>
 			</File>
 			<File
