@@ -35,41 +35,49 @@ void PSA::init_particle_temp()
 				this->particle_temp[0].X[j] = AdapParam::kc2[0];
 				this->particle_temp[1].X[j] = AdapParam::kc2[1];
 				this->particle_temp[2].X[j] = AdapParam::kc2[2];
+				//cout << "KC2:" << setw(15) << AdapParam::kc2[0] << setw(15) << AdapParam::kc2[1] << setw(15) << AdapParam::kc2[2] << endl;
 				break;
 			case 1: // kp
 				this->particle_temp[0].X[j] = AdapParam::kp2[0];
 				this->particle_temp[1].X[j] = AdapParam::kp2[1];
 				this->particle_temp[2].X[j] = AdapParam::kp2[2];
+				//cout << "kp2:" << setw(15) << AdapParam::kp2[0] << setw(15) << AdapParam::kp2[1] << setw(15) << AdapParam::kp2[2] << endl;
 				break;
 			case 2: // km
 				this->particle_temp[0].X[j] = AdapParam::km2[0];
 				this->particle_temp[1].X[j] = AdapParam::km2[1];
 				this->particle_temp[2].X[j] = AdapParam::km2[2];
+				//cout << "km2:" << setw(15) << AdapParam::km2[0] << setw(15) << AdapParam::km2[1] << setw(15) << AdapParam::km2[2] << endl;
 				break;
 			case 3: // ks
 				this->particle_temp[0].X[j] = AdapParam::ks2[0];
 				this->particle_temp[1].X[j] = AdapParam::ks2[1];
 				this->particle_temp[2].X[j] = AdapParam::ks2[2];
+				//cout << "KC2:" << setw(15) << AdapParam::kc2[0] << setw(15) << AdapParam::kc2[1] << setw(15) << AdapParam::kc2[2] << endl;
 				break;
 			case 4: // J0
 				this->particle_temp[0].X[j] = AdapParam::J02[0];
 				this->particle_temp[1].X[j] = AdapParam::J02[1];
 				this->particle_temp[2].X[j] = AdapParam::J02[2];
+				//cout << "J02:" << setw(15) << AdapParam::J02[0] << setw(15) << AdapParam::J02[1] << setw(15) << AdapParam::J02[2] << endl;
 				break;
 			case 5: // LRef
 				this->particle_temp[0].X[j] = AdapParam::LRef2[0];
 				this->particle_temp[1].X[j] = AdapParam::LRef2[1];
 				this->particle_temp[2].X[j] = AdapParam::LRef2[2];
+				//cout << "LRef2:" << setw(15) << AdapParam::LRef2[0] << setw(15) << AdapParam::LRef2[1] << setw(15) << AdapParam::LRef2[2] << endl;
 				break;
 			case 6: // tauRef
 				this->particle_temp[0].X[j] = AdapParam::tauRef2[0];
 				this->particle_temp[1].X[j] = AdapParam::tauRef2[1];
 				this->particle_temp[2].X[j] = AdapParam::tauRef2[2];
+				//cout << "tauRef2:" << setw(15) << AdapParam::tauRef2[0] << setw(15) << AdapParam::tauRef2[1] << setw(15) << AdapParam::tauRef2[2] << endl;
 				break;
 			case 7: // QRef
 				this->particle_temp[0].X[j] = AdapParam::QRef2[0];
 				this->particle_temp[1].X[j] = AdapParam::QRef2[1];
 				this->particle_temp[2].X[j] = AdapParam::QRef2[2];
+				//cout << "QRef2:" << setw(15) << AdapParam::QRef2[0] << setw(15) << AdapParam::QRef2[1] << setw(15) << AdapParam::QRef2[2] << endl;
 				break;
 			default:
 				break;
@@ -89,10 +97,10 @@ void PSA::reinflat_particles(int param_index)
 	this->particles.clear();
 	this->particles.assign(this->step_len, particle_temp[0]);
 
-	for (int i=0; i<this->step_len; i++)
+	for (int i=0; i<=this->step_len; i++)
 	{
 		particle &p = this->particles.at(i);
-		p.X[param_index] = i*(particle_temp[1].X[param_index] - particle_temp[2].X[param_index])/this->step_len;
+		p.X[param_index] = particle_temp[2].X[param_index]+i*(particle_temp[1].X[param_index] - particle_temp[2].X[param_index])/this->step_len;
 	}
 }
 
