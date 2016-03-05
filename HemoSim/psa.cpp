@@ -95,9 +95,9 @@ void PSA::reinflat_particles(int param_index)
 	}
 	
 	this->particles.clear();
-	this->particles.assign(this->step_len, particle_temp[0]);
+	this->particles.assign(this->step_len+1, particle_temp[0]);
 
-	for (int i=0; i<=this->step_len; i++)
+	for (int i=0; i<this->step_len; i++)
 	{
 		particle &p = this->particles.at(i);
 		p.X[param_index] = particle_temp[2].X[param_index]+i*(particle_temp[1].X[param_index] - particle_temp[2].X[param_index])/this->step_len;
