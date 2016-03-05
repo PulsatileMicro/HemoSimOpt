@@ -292,7 +292,8 @@ int RCSolver::Jac(long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, voi
 	if (djacobi_init (&handle, &n, &n, NV_DATA_S(y), J->data, &eps) != TR_SUCCESS){
 		/* if function does not complete successfully then print error message */
 		printf ("\n#fail: error in djacobi_init\n"); fflush (0);
-		MKL_FreeBuffers();
+		//MKL_FreeBuffers();
+		MKL_Free_Buffers();
 		return 1;
 	}
 
@@ -305,7 +306,8 @@ int RCSolver::Jac(long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, voi
 		if (djacobi_solve (&handle, f1, f2, &rci_request) != TR_SUCCESS){
 			/* if function does not complete successfully then print error message */
 			printf ("\n#fail: error in djacobi_solve\n"); fflush (0);
-			MKL_FreeBuffers();
+			//MKL_FreeBuffers();
+			MKL_Free_Buffers();
 			return 1;
 		}
 		if (rci_request == 1) {
@@ -324,10 +326,11 @@ int RCSolver::Jac(long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, voi
 	if (djacobi_delete (&handle) != TR_SUCCESS) {
 		/* if function does not complete successfully then print error message */
 		printf ("\n#fail: error in djacobi_delete\n"); fflush (0);
-		MKL_FreeBuffers();
+		//MKL_FreeBuffers();
+		MKL_Free_Buffers();
 		return 1;
 	}
-	MKL_FreeBuffers();
-
+	//MKL_FreeBuffers();
+	MKL_Free_Buffers();
 	return 0;
 }
