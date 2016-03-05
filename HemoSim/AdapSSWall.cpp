@@ -9,12 +9,9 @@
 #include <iomanip>
 #include <string>
 #include "pso.h"
+#include "psa.h"
 #include "PreProcessor.h"
 using namespace std;
-
-//#ifndef _DEBUG
-//#	define _DEBUG
-//#endif
 
 double  **Adap_SS_Solver::JMat=NULL;
 double  *Adap_SS_Solver::NodeFlow=NULL;
@@ -106,7 +103,7 @@ void Adap_SS_Solver::initSolver(){
 		Nmarker[i]=0;
 	}
 
-	AdapParam::initPriesAdapParam();
+	AdapParam::initYJLAdapParam();
 
 	for(i=0;i<ModelParam::Ndoms;i++){
 		lastVisc.push_back(0.0);
@@ -162,18 +159,24 @@ void Adap_SS_Solver::initSolver(){
 		}  
 	}
 
-	AdapParam::optCate=AdapParam::PSO;
 	if (!strncmp(ModelParam::argv[ModelParam::argc-2], "STDPSO",6))
 	{
+		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::STDPSO;
 	} 
 	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "CMPPSO",6))
 	{
+		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::CMPPSO;
 	}
 	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "QUAPSO",6))
 	{
+		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::QUAPSO;
+	}
+	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "PSA",3))
+	{
+		AdapParam::optCate=AdapParam::PSA;
 	}
 	else{
 		cout << "connot figure out adapParam::optType!" << endl;
@@ -181,14 +184,14 @@ void Adap_SS_Solver::initSolver(){
 	}
 	AdapParam::adapLogFile.open("adap_results.txt");
 	if(ModelParam::solverType==ModelParam::Adap_SS_Wall){
-		AdapParam::adapLogFile << setw(15) << "Particle_ID" << setw(15) << "ErrorV" << setw(15) << "ErrorD" 
+		AdapParam::adapLogFile << setw(15) << "Particle_ID" << setw(15) << "ErrorType" << setw(15) << "ErrorV" << setw(15) << "ErrorD" 
 			<< setw(15) << "ErrorQ" << setw(15) << "PO2Ref" << setw(15) << "kc" << setw(15) << "kmd" 
 			<< setw(15) << "kmg" << setw(15) << "ksd" << setw(15) << "ksg" << setw(15) << "kwtau" 
 			<< setw(15) << "kwsigma" << setw(15) << "tauRef" << setw(15) << "sigmaRef" << setw(15) << "wRef" 
 			<< setw(15) << "J0" << setw(15) << "LRef" << endl;
 	}
 	else if(ModelParam::solverType==ModelParam::Adap_SS_NoWall){
-		AdapParam::adapLogFile << setw(15) << "Particle_ID" << setw(15) << "ErrorV" << setw(15) << "ErrorD" 
+		AdapParam::adapLogFile << setw(15) << "Particle_ID" << setw(15) << "ErrorType" << setw(15) << "ErrorV" << setw(15) << "ErrorD" 
 			<< setw(15) << "ErrorQ" << setw(15) << "kc" << setw(15) << "kp" << setw(15) << "km" 
 			<< setw(15) << "ks" << setw(15) << "J0" << setw(15) << "LRef" << setw(15) << "tauRef" 
 			<< setw(15) << "QRef" << endl;
@@ -234,6 +237,30 @@ void Adap_SS_Solver::solve(){
 			printf("AdapErrCnt=%d\n", AdapParam::AdapErrCnt);
 		}  
 		break;
+	case AdapParam::PSA:
+		{
+			AdapParam::initRandomAdapParam();
+			PSA psa;
+			psa.set_step_len(100);
+			psa.init_particle_temp();
+			if (ModelParam::solverType == ModelParam::Adap_SS_NoWall)
+			{
+				for (int i=0; i<8;i++)
+				{
+					psa.reinflat_particles(i);
+					psa.run_params_sensitivity_analysis(i);
+				}
+			} 
+			else
+			{
+				for (int i=0; i<12;i++)
+				{
+					psa.reinflat_particles(i);
+					psa.run_params_sensitivity_analysis(i);
+				}
+			}
+			break;
+		}
 	case AdapParam::DOWNHILL:
 		break;
 	case AdapParam::NO_OPT:
@@ -320,9 +347,9 @@ int Adap_SS_Solver::AdapObjFunc()
 			// TODO: 使用MATLAB代码中的modifyViscosity函数
 			for(n=0;n<ModelParam::Ndoms;++n)
 				lastVisc[n]=ModelParam::omega[n].visc[0];
-#ifdef _DEBUG
+#ifdef SS_DEBUG
 			cout << "ViscLoop=" << loop1_cnt << " MaxViscErr=" << maxViscErr;
-#endif // _DEBUG
+#endif // SS_DEBUG
 		}
 
 		if(AdapParam::errFlag)
@@ -479,9 +506,9 @@ int Adap_SS_Solver::AdapObjFunc()
 		}
 	}
 	// 自适应循环结束
-#ifdef _DEBUG
+#ifdef SS_DEBUG
 	cout << " AdapLoop=" << loop2_cnt << " last_mean_Stot=" << last_mean_Stot << endl;
-#endif // _DEBUG
+#endif // SS_DEBUG
 
 	if(loop2_cnt==loop2_adap_num){
 		AdapParam::errFlag=AdapParam::NO_CONV;

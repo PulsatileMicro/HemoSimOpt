@@ -10,6 +10,7 @@ public:
 	~AdapParam() {}
 
 	static void initPriesAdapParam();
+	static void initYJLAdapParam();
 	static void initRandomAdapParam();
 	static void setPara2PSO(double X[]);
 
@@ -17,6 +18,7 @@ public:
 		NO_OPT=0,
 		PSO=1,
 		DOWNHILL=2,
+		PSA=3, /*参数灵敏度分析*/
 	};
 	// 优化方法
 	enum OptType{

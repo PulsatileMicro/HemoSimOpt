@@ -1,7 +1,7 @@
 #include "SparSSSolver.h"
 #include "ModelParam.h"
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include <string.h>
 #include <mkl_spblas.h>
 
