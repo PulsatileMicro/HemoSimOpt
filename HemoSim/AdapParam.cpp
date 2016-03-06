@@ -115,9 +115,6 @@ void AdapParam::initYJLAdapParam(){
 }
 
 void AdapParam::initRandomAdapParam(){
-	// 以Pries的参数为起点，设置一定范围进行随机取值
-	initYJLAdapParam();
-
 	int var=5;
 	// 阈值
 	PO2Ref[1]   = 96;       // mmHg

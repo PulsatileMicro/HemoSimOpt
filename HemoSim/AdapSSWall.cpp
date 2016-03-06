@@ -206,6 +206,10 @@ void Adap_SS_Solver::solve(){
 	AdapParam::AdapErrCnt=0;
 	switch(AdapParam::optCate){
 	case AdapParam::PSO:
+		// 以Pries的参数为起点，设置一定范围进行随机取值
+		//AdapParam::initPriesAdapParam();
+		// 以目前最好的结果为起点，
+		AdapParam::initYJLAdapParam();
 		AdapParam::initRandomAdapParam();   // 初始化自适应参数
 		PSO_RandInitofSwarm();              // 初始化PSO参数
 		// PSO_PriesInitofSwarm();
@@ -239,6 +243,10 @@ void Adap_SS_Solver::solve(){
 		break;
 	case AdapParam::PSA:
 		{
+			// 以Pries的参数为起点，设置一定范围进行随机取值
+			AdapParam::initPriesAdapParam();
+			// 以目前最好的结果为起点，
+			//AdapParam::initYJLAdapParam();
 			AdapParam::initRandomAdapParam();
 			PSA psa;
 			psa.set_step_len(100);
