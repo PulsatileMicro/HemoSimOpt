@@ -3,7 +3,7 @@
 
 #define PSO_Dim   8     // 每个粒子的维度 13 or 8
 #define PSO_PNum  20    // 粒子数量
-#define PSO_N     10000    // 迭代次数
+#define PSO_N     1500    // 迭代次数, 经验值1500 enough！！
 //#define NOADAPERR TRUE	// 每个粒子必须计算出结果
 
 typedef struct PARTICLE{
@@ -19,6 +19,7 @@ typedef struct PARTICLE{
 
 typedef struct SWARM{  
 	particle Particle[PSO_PNum];
+	int	convergence_time;
 	double GBestFitness;
 	double GBest[PSO_Dim];
 	double W;

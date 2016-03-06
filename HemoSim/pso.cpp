@@ -288,14 +288,14 @@ void PSO_ComputFitofSwarm(int nIter){
 		}
 #endif
 
-		printf("Particle, The Fitness of %dth Particle: ",i+1);
+		//printf("Particle, The Fitness of %dth Particle: ",i+1);
 		// s->Particle[i].Fitness = AdapParam::ErrorD;
 		s->Particle[i].Fitness = AdapParam::ErrorV;
 		if ( nIter == 1 && i == 0)
 		{
 			s->GBestFitness = s->Particle[i].Fitness;
 		}
-		cout << setprecision(6) << setw(15) << s->Particle[i].Fitness << endl;
+		//cout << setprecision(6) << setw(15) << s->Particle[i].Fitness << endl;
 
 		if (AdapParam::errFlag == AdapParam::NO_ADAP_ERR)
 		{
@@ -416,7 +416,7 @@ void PSO_UpdateofVandX_QuantumBehavior(int nIter){
 				s->Particle[i].X[j]=s->Xup[j] - (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
 			if(s->Particle[i].X[j]<s->Xdown[j])  
 				s->Particle[i].X[j]=s->Xdown[j] + (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
-			cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+			//cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
 		}   
 	}
 }
@@ -485,6 +485,7 @@ void PSO_UpdatePandGbest( int nIter){
 			}  
 			s->Particle[i].PBestFitness = s->Particle[i].Fitness;
 		}
+		s->convergence_time = 0;
 	}
 	else
 	{
@@ -501,7 +502,8 @@ void PSO_UpdatePandGbest( int nIter){
 		}  
 	}
 	
-	//update of GBest  
+	//update of GBest 
+	double gbest_temp = s->GBestFitness;
 	for(i=0; i<PSO_PNum; i++)
 		// if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
 		if(s->Particle[i].PBestFitness <= s->GBestFitness){
@@ -510,7 +512,8 @@ void PSO_UpdatePandGbest( int nIter){
 				s->GBest[j]=s->Particle[i].PBest[j];
 			}
 		}
-	cout<< "Fitness of GBest: " << setprecision(6) << setw(12) << s->GBestFitness <<endl;
+	fabs(gbest_temp - s->GBestFitness) < 1e-6 && s->GBestFitness < 1.0 ? s->convergence_time++ : s->convergence_time = 1;
+	//cout<< "Fitness of GBest: " << setprecision(6) << setw(12) << s->GBestFitness <<endl;
 	if ( nIter == 1)
 	{
 		AdapParam::adapGBestFile.open("Global_Best_Record.dat",ios::app);

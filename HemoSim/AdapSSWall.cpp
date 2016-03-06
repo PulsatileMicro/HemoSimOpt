@@ -211,10 +211,10 @@ void Adap_SS_Solver::solve(){
 		// PSO_PriesInitofSwarm();
 
 		// Start Iteration
-		while(n++!=PSO_N)
+		while(n++ < PSO_N && s->convergence_time < 30)
 		{  
 			AdapParam::adapLogFile << "Iteration " << n << endl;
-			printf("The %dth time to calculate .\n", n);
+			//printf("The %dth time to calculate .\n", n);
 			//printf("Updated of the swarm's Fitness:\n");  
 			PSO_ComputFitofSwarm(n);
 			//printf("Replaced of P and Gbest:\n\n");  
@@ -270,6 +270,7 @@ void Adap_SS_Solver::solve(){
 	default:
 		break;
 	}
+	exit(EXIT_SUCCESS);
 }
 
 /*!
@@ -564,10 +565,10 @@ int Adap_SS_Solver::AdapObjFunc()
 		  default:
 			  break;
 		}
-		cout << "error code=" << errStr << endl;
-		/*AdapParam::ErrorQ=AdapParam::ErrorQ*10;
-		AdapParam::ErrorV=AdapParam::ErrorV*10;*/
-		AdapParam::ErrorV = AdapParam::ErrorQ = 100.00;
+		isnan(AdapParam::ErrorV)? 
+			AdapParam::ErrorV = AdapParam::ErrorQ = 100.00:
+			AdapParam::ErrorV = AdapParam::ErrorQ *= 100;
+		//cout << "error code=" << errStr << "error_v:" << AdapParam::ErrorV << endl;
 	}
 
 	// Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
