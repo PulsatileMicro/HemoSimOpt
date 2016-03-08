@@ -20,6 +20,8 @@ void PSO_RandInitofSwarm(void){
 	s->C1=2.05;  
 	s->C2=2.05;
 	s->Alpha=0.5;
+	s->consist_convergence_time = 0;
+	s->total_convergence_time = 0;
 	for(j=0;j<PSO_Dim;j++)
 	{
 		if(ModelParam::solverType==ModelParam::Adap_SS_Wall){
@@ -143,6 +145,8 @@ void PSO_PriesInitofSwarm(void){
 	s->W=1.4;  
 	s->C1=2.0;  
 	s->C2=2.0;
+	s->consist_convergence_time = 0;
+	s->total_convergence_time = 0;
 	for(j=0;j<PSO_Dim;j++)
 	{
 		if(ModelParam::solverType==ModelParam::Adap_SS_Wall){
@@ -485,7 +489,6 @@ void PSO_UpdatePandGbest( int nIter){
 			}  
 			s->Particle[i].PBestFitness = s->Particle[i].Fitness;
 		}
-		s->convergence_time = 0;
 	}
 	else
 	{
@@ -512,7 +515,18 @@ void PSO_UpdatePandGbest( int nIter){
 				s->GBest[j]=s->Particle[i].PBest[j];
 			}
 		}
-	fabs(gbest_temp - s->GBestFitness) < 1e-6 && s->GBestFitness < 1.0 ? s->convergence_time++ : s->convergence_time = 1;
+	if (s->GBestFitness < 1)
+	{
+		s->total_convergence_time++;
+		if(fabs(gbest_temp - s->GBestFitness) < 1e-7)
+		{
+			s->consist_convergence_time++;
+		}
+		else
+		{
+			s->consist_convergence_time = 1;
+		}
+	}
 	//cout<< "Fitness of GBest: " << setprecision(6) << setw(12) << s->GBestFitness <<endl;
 	if ( nIter == 1)
 	{

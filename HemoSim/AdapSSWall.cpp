@@ -203,7 +203,6 @@ void Adap_SS_Solver::initSolver(){
 */
 void Adap_SS_Solver::solve(){
 	int n=0;
-	AdapParam::AdapErrCnt=0;
 	switch(AdapParam::optCate){
 	case AdapParam::PSO:
 		// 以Pries的参数为起点，设置一定范围进行随机取值
@@ -215,11 +214,12 @@ void Adap_SS_Solver::solve(){
 		// PSO_PriesInitofSwarm();
 
 		// Start Iteration
-		while(n++ < PSO_N && s->convergence_time < 30)
+		while(n++ < PSO_N && s->consist_convergence_time < 30 && s->total_convergence_time < 500)
 		{  
 			AdapParam::adapLogFile << "Iteration " << n << endl;
 			//printf("The %dth time to calculate .\n", n);
-			//printf("Updated of the swarm's Fitness:\n");  
+			//printf("Updated of the swarm's Fitness:\n");
+			AdapParam::AdapErrCnt = 0;
 			PSO_ComputFitofSwarm(n);
 			//printf("Replaced of P and Gbest:\n\n");  
 			PSO_UpdatePandGbest(n);
@@ -239,7 +239,10 @@ void Adap_SS_Solver::solve(){
 					break;
 			}
 			printf("AdapErrCnt=%d\n", AdapParam::AdapErrCnt);
-		}  
+		} 
+		cout << "steps_num:	               " << n << endl;
+		cout << "consist_convergence_time: " << s->consist_convergence_time << endl;
+		cout << "total_convergence_time:   " << s->total_convergence_time << endl;
 		break;
 	case AdapParam::PSA:
 		{
@@ -303,7 +306,6 @@ int Adap_SS_Solver::AdapObjFunc()
 	// Reset the structural parameters and connection matrix to the original state
 	resetInitState();
 
-	AdapParam::AdapErrCnt=0;
 	AdapParam::errFlag=AdapParam::NO_ADAP_ERR;
 	while(++loop2_cnt<loop2_adap_num){
 		loop1_cnt=0;
@@ -325,7 +327,6 @@ int Adap_SS_Solver::AdapObjFunc()
 			}
 			adjustHdCalcPOrder();
 			if(AdapParam::errFlag){
-				// AdapParam::AdapErrCnt++;
 				break;
 			}
 
@@ -459,7 +460,6 @@ int Adap_SS_Solver::AdapObjFunc()
 				}
 			}
 			else{
-				AdapParam::AdapErrCnt++;
 				// 出错，自适应立即结束
 				break;
 			}
@@ -508,7 +508,6 @@ int Adap_SS_Solver::AdapObjFunc()
 					last_mean_Stot=mean_Stot;
 			}
 			else{
-				AdapParam::AdapErrCnt++;
 				// 出错，自适应立即结束
 				break;
 			}
@@ -547,6 +546,7 @@ int Adap_SS_Solver::AdapObjFunc()
 	AdapParam::ErrorQ=AdapParam::ErrorV;
 
 	if(AdapParam::errFlag){
+		AdapParam::AdapErrCnt++;
 		string errStr;
 		switch(AdapParam::errFlag){
 		  case AdapParam::FLOWDIR:
