@@ -295,7 +295,7 @@ void PSO_ComputFitofSwarm(int nIter){
 		//printf("Particle, The Fitness of %dth Particle: ",i+1);
 		// s->Particle[i].Fitness = AdapParam::ErrorD;
 		s->Particle[i].Fitness = AdapParam::ErrorV;
-		if ( nIter == 1 && i == 0)
+		if (nIter == 1 && i == 0)
 		{
 			s->GBestFitness = s->Particle[i].Fitness;
 		}
@@ -389,7 +389,8 @@ void PSO_UpdateofVandX_CompressMutation(){
 
 void PSO_UpdateofVandX_QuantumBehavior(int nIter){
 	int i,j;  
-	double Beita =  (1 - s->Alpha)*(PSO_N - nIter + 1)/PSO_N + s->Alpha;
+	// double Beita =  (1 - s->Alpha)*(PSO_N - nIter + 1)/PSO_N + s->Alpha;
+	double Beita =  0.7 + (double)rand()/(RAND_MAX+1);
 	srand((unsigned)time(NULL));
 	for(i=0; i<PSO_PNum; i++){  
 		//printf(" The %dth of X is: ",i);  
@@ -495,7 +496,7 @@ void PSO_UpdatePandGbest( int nIter){
 		//update of P if the X is bigger than current P  
 		for (i = 0; i < PSO_PNum; i++){  
 			//printf(" The %dth of P is: ",i);  
-			if (s->Particle[i].Fitness <= s->Particle[i].PBestFitness){  
+			if (!(s->Particle[i].Fitness > s->Particle[i].PBestFitness)){  
 				for(j=0;j<PSO_Dim;j++){  
 					s->Particle[i].PBest[j] = s->Particle[i].X[j];  
 				}  
@@ -509,7 +510,7 @@ void PSO_UpdatePandGbest( int nIter){
 	double gbest_temp = s->GBestFitness;
 	for(i=0; i<PSO_PNum; i++)
 		// if(PSO_ComputAFitness(s->Particle[i].P) <= s->Particle[s->GBestIndex].Fitness)
-		if(s->Particle[i].PBestFitness <= s->GBestFitness){
+		if(!(s->Particle[i].PBestFitness > s->GBestFitness)){
 			s->GBestFitness = s->Particle[i].PBestFitness;
 			for(j=0;j<PSO_Dim;j++){
 				s->GBest[j]=s->Particle[i].PBest[j];
@@ -549,14 +550,41 @@ void PSO_UpdatePandGbest( int nIter){
 			}
 			s->MeanX[j] = temp/PSO_PNum;
 		}
-	}else if (AdapParam::optMethod == AdapParam::SELPSO)
+
+		if(nIter != 1)
+		{
+			constexpr std::size_t pso_size_t = sizeof s->Particle / sizeof *s->Particle;
+
+			std::qsort(s->Particle, pso_size_t, sizeof *s->Particle, [](const void* x, const void* y)
+			{
+				particle arg1 = *static_cast<const struct PARTICLE*>(x);
+				particle arg2 = *static_cast<const struct PARTICLE*>(y);
+
+				if (arg1.Fitness - arg2.Fitness < 1e-7)
+					return -1;
+				else if (arg1.Fitness - arg2.Fitness > 1e-7)
+					return 1;
+				else
+					return 0;
+			});
+
+			for (i = 0; i < PSO_PNum/2; i++)
+			{
+				for (j = 0; j < PSO_Dim; j++)
+				{
+					s->Particle[PSO_PNum - 1 - i].X[j] = s->Particle[i].X[j];
+				}
+			}
+		}
+	}
+	else if (AdapParam::optMethod == AdapParam::SELPSO)
 	{
 		PSO_QuickSort(s->Particle, 0, PSO_PNum);
 		for (i=0; i<PSO_PNum/2; i++)
 		{
 			for (j=0; j<PSO_Dim; j++)
 			{
-				s->Particle[PSO_PNum - i].X[j] = s->Particle[i].X[j];
+				s->Particle[PSO_PNum - 1 - i].X[j] = s->Particle[i].X[j];
 			}
 		}
 	}
