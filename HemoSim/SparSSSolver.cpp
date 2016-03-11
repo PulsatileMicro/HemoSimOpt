@@ -378,7 +378,7 @@ void SparSSSolver::solve()
 		MeanP[n]=MeanP[n]/133;
 	}
 
-	Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
+	Write_history(ModelParam::omega,ModelParam::argv[1]);
 }
 
 void SparSSSolver::destroySolver()

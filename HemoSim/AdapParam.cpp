@@ -100,14 +100,48 @@ void AdapParam::initYJLAdapParam(){
 	LRef[0]     = 14292;      // um
 
 	// For no wall adaptation
-	kc2[0]=2.12749;
-	kp2[0]=0.21808;
-	km2[0]=0.784955;
-	ks2[0]=2.79588;
-	J02[0]=31.36;
-	LRef2[0]=20164;           // um
-	tauRef2[0]=0.110094;         // dyn/cm2
-	QRef2[0]=0.219394;           // nl/min
+	//kc2[0]=2.12749;
+	//kp2[0]=0.21808;
+	//km2[0]=0.784955;
+	//ks2[0]=2.79588;
+	//J02[0]=31.36;
+	//LRef2[0]=20164;           // um
+	//tauRef2[0]=0.110094;         // dyn/cm2
+	//QRef2[0]=0.219394;           // nl/min
+
+	//kc2[0] = 1.80654;
+	//kp2[0] = 0.164962;
+	//km2[0] = 0.748075;
+	//ks2[0] = 2.75425;
+	//J02[0] = 29.8448;
+	//LRef2[0] = 19793.7;           // um
+	//tauRef2[0] = 0.114734;         // dyn/cm2
+	//QRef2[0] = 0.20811;
+
+	if(ModelParam::argc < 8)
+	{
+		kc2[0] = 1.97485;
+		kp2[0] = 0.597905;
+		km2[0] = 0.760185;
+		ks2[0] = 2.18997;
+		J02[0] = 34.387;
+		LRef2[0] = 23210;           // um
+		tauRef2[0] = 0.123282;         // dyn/cm2
+		QRef2[0] = 0.234915;
+	}
+	else
+	{
+		kc2[0] = atof(ModelParam::argv[ModelParam::argc - 8]);
+		kp2[0] = atof(ModelParam::argv[ModelParam::argc - 7]);
+		km2[0] = atof(ModelParam::argv[ModelParam::argc - 6]);
+		ks2[0] = atof(ModelParam::argv[ModelParam::argc - 5]);
+		J02[0] = atof(ModelParam::argv[ModelParam::argc - 4]);
+		LRef2[0] = atof(ModelParam::argv[ModelParam::argc - 3]);           // um
+		tauRef2[0] = atof(ModelParam::argv[ModelParam::argc - 2]);         // dyn/cm2
+		QRef2[0] = atof(ModelParam::argv[ModelParam::argc-1]);
+	}
+	
+
 
 	// 其它自适应计算相关的参数
 	dt=0.1;

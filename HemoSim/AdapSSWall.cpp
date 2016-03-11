@@ -159,22 +159,22 @@ void Adap_SS_Solver::initSolver(){
 		}  
 	}
 
-	if (!strncmp(ModelParam::argv[ModelParam::argc-2], "STDPSO",6))
+	if (!strncmp(ModelParam::argv[2], "STDPSO",6))
 	{
 		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::STDPSO;
 	} 
-	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "CMPPSO",6))
+	else if (!strncmp(ModelParam::argv[2], "CMPPSO",6))
 	{
 		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::CMPPSO;
 	}
-	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "QUAPSO",6))
+	else if (!strncmp(ModelParam::argv[2], "QUAPSO",6))
 	{
 		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::QUAPSO;
 	}
-	else if (!strncmp(ModelParam::argv[ModelParam::argc-2], "PSA",3))
+	else if (!strncmp(ModelParam::argv[2], "PSA",3))
 	{
 		AdapParam::optCate=AdapParam::PSA;
 	}
@@ -247,12 +247,12 @@ void Adap_SS_Solver::solve(){
 	case AdapParam::PSA:
 		{
 			// 以Pries的参数为起点，设置一定范围进行随机取值
-			AdapParam::initPriesAdapParam();
+			//AdapParam::initPriesAdapParam();
 			// 以目前最好的结果为起点，
-			//AdapParam::initYJLAdapParam();
+			AdapParam::initYJLAdapParam();
 			AdapParam::initRandomAdapParam();
 			PSA psa;
-			psa.set_step_len(100);
+			psa.set_step_len(atoi(ModelParam::argv[3]));
 			psa.init_particle_temp();
 			if (ModelParam::solverType == ModelParam::Adap_SS_NoWall)
 			{
@@ -579,7 +579,7 @@ int Adap_SS_Solver::AdapObjFunc()
 		//cout << "error code=" << errStr << "error_v:" << AdapParam::ErrorV << endl;
 	}
 
-	// Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
+	// Write_history(ModelParam::omega,ModelParam::argv[1]);
 
 	return AdapParam::errFlag;
 }

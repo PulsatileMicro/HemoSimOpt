@@ -15,7 +15,7 @@ void PreProcessor::run(int argc, char *argv[]){
 								  about the file to be read or written. In this case is the input file ".in". */
 
 	/* "infile" is defined as a string with the name of the input file. */
-	infile = argv[argc-1];
+	infile = argv[1];
 
 	sprintf(buf,"%s.in",  strtok(infile,".")); /* This "stdio.h" function writes the output "%s.in" into
 											   the string "buf", terminated with '\0'. The return count

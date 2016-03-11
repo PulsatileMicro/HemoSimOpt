@@ -177,7 +177,7 @@ void OneDSolver::solve(){
 		/* It is checked if the solution in the .his file can be written according to "hisstep". If it
 		can, Write_history does the job. */
 		if(ModelParam::hisSteps&&(!((i+1)%ModelParam::hisSteps))){
-			Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
+			Write_history(ModelParam::omega,ModelParam::argv[1]);
 			// BifurHd(omega);
 			if(ModelParam::showCFL){
 				/* The current time step, time and CFL number are printed on the screen. */
@@ -231,7 +231,7 @@ void OneDSolver::Eval_RHS(int argc, char *argv[]){
 
 	Bifur        (ModelParam::omega); /* Set bc's at the bifurcations (both merging and splitting flow cases).
 									  They are stored in bcval of each structure omega[d].*/
-	BioFlux      (ModelParam::omega,argv[argc-1]); /* Determines the upwind variables at each interelement boundary by
+	BioFlux      (ModelParam::omega,argv[1]); /* Determines the upwind variables at each interelement boundary by
 												   solving a Riemann problem and performs the difference between the upwind
 												   and the local fluxes, taking into account the bc's enforced at both sides
 												   of each domain. The result is multiplied by the Legendre polynomial

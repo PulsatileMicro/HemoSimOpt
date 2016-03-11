@@ -56,7 +56,7 @@ void Display_screen(Domain *omega){
 		default:
 			break;
 	}
-	fprintf(stdout, "Adapt Optimize method: %s\n", ModelParam::argv[ModelParam::argc-2]);
+	fprintf(stdout, "Adapt Optimize method: %s\n", ModelParam::argv[2]);
 	fprintf(stdout,"dt:                     %lg\n",ModelParam::dt);
 	fprintf(stdout,"Number of time steps:   %d\n", ModelParam::nSteps);
 	fprintf(stdout,"Number of domains:      %d\n", ModelParam::Ndoms);
@@ -70,12 +70,15 @@ void Display_screen(Domain *omega){
 
 int main(int argc, char *argv[]){
 	
-	if (argc !=3)
+	if (argc < 3)
 	{
-		cout << "you need 2 arguments: optType and input file!" << endl;
+		cout << "you need 2 arguments for Optmization: input file and optType! Or many numbers for PSA" << endl;
+		cout << "USEAGE: HemoSim.exe Net_546.in QUAPSO" << endl;
+		cout << "OR" << endl;
+		cout << "USEAGE: HemoSim.exe Net_546.in PSA 2.12749 0.21808 0.784955 2.79588 31.36 20164 0.116259 0.219394" << endl;
 		exit(EXIT_FAILURE);
 	}else {
-		cout << "optType: " << argv[argc-2] << " inputFile: " << argv[argc-1] << endl;
+		cout << "optType: " << argv[2] << " inputFile: " << argv[1] << endl;
 	}
 	ModelParam::argc=argc;
 	ModelParam::argv=argv;

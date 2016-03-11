@@ -87,7 +87,7 @@ void ZeroDSolver::solve(){
 		/* It is checked if the solution in the .his file can be written according to "hisstep". If it
 		can, Write_history does the job. */
 		if(ModelParam::hisSteps&&(!((i+1)%ModelParam::hisSteps))){
-			Write_history(ModelParam::omega,ModelParam::argv[ModelParam::argc-1]);
+			Write_history(ModelParam::omega,ModelParam::argv[1]);
 		}
 	}
 }
@@ -124,7 +124,7 @@ void ZeroDSolver::Eval_RHS(int argc, char *argv[]){
 	double Capacitor, Resistance;
 	static FILE  **fIN, **fOUT; // Points to the inlet and outlet of a domain at the boundary of the network
 	static double *q_in;
-	char *name = argv[argc-1];
+	char *name = argv[1];
 
 	if(!fIN){ // The first time the routine is called,
 		fIN = (FILE **)calloc(ModelParam::Ndoms,sizeof(FILE *)); // Allocate space for "fIN" to read from a .bcs file
