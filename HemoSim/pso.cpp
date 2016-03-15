@@ -16,9 +16,9 @@ particle *p=(particle *)malloc(sizeof(particle));
 void PSO_RandInitofSwarm(void){
 	int i,j;  
 
-	s->W=1.4;  
-	s->C1=2.05;  
-	s->C2=2.05;
+	s->W=0.6;  
+	s->C1=1.8;  
+	s->C2=2.4;
 	s->Alpha=0.5;
 	s->consist_convergence_time = 0;
 	s->total_convergence_time = 0;
@@ -123,11 +123,20 @@ void PSO_RandInitofSwarm(void){
 		s->Vmax[j] = (s->Xup[j]+s->Xdown[j])/10;
 	}  
 
+	srand((unsigned)time(NULL));
 	for(i=0; i<PSO_PNum; i++){  
 		//printf(" The %dth of X is: ",i);  
 		for(j=0; j<PSO_Dim; j++){
-			s->Particle[i].X[j] = i*(s->Xup[j]-s->Xdown[j])/PSO_PNum+s->Xdown[j];
-			s->Particle[i].V[j] = 0.3*(s->Xup[j]-s->Xdown[j]);
+			if(!strncmp(ModelParam::argv[3], "RDMINI", 6))
+			{
+				s->Particle[i].X[j] = (s->Xup[j] - s->Xdown[j])*rand()/(RAND_MAX+1)+s->Xdown[j];
+				s->Particle[i].V[j] = rand() / (RAND_MAX + 1)*(s->Xup[j] - s->Xdown[j]);
+			}
+			else
+			{
+				s->Particle[i].X[j] = i*(s->Xup[j] - s->Xdown[j]) / PSO_PNum + s->Xdown[j];
+				s->Particle[i].V[j] = 0.3*(s->Xup[j] - s->Xdown[j]);
+			}
 			cout << setprecision(6) << setw(15) << s->Particle[i].X[j];
 			if (AdapParam::optMethod == AdapParam::SECPSO)
 			{
@@ -142,9 +151,9 @@ void PSO_RandInitofSwarm(void){
 void PSO_PriesInitofSwarm(void){
 	int i,j;  
 
-	s->W=1.4;  
-	s->C1=2.0;  
-	s->C2=2.0;
+	s->W=0.5;  
+	s->C1=1.8;  
+	s->C2=2.4;
 	s->consist_convergence_time = 0;
 	s->total_convergence_time = 0;
 	for(j=0;j<PSO_Dim;j++)
@@ -332,9 +341,10 @@ void PSO_UpdateofVandX(){
 		//printf(" The %dth of X is: ",i);  
 		for(j=0; j<PSO_Dim; j++)
 			s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
-		s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
-			(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
-			(double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - s->Particle[i].X[j]);  
+		// 惯性权重0.5 学习因子都为2？一般c1=c2 0~4 之间；
+			s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
+				(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
+				(double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - s->Particle[i].X[j]);  
 		for(j=0; j<PSO_Dim; j++){  
 			if(s->Particle[i].V[j]>s->Vmax[j])
 				s->Particle[i].V[j] = s->Vmax[j];  
@@ -349,7 +359,7 @@ void PSO_UpdateofVandX(){
 				s->Particle[i].X[j]=s->Xup[j];  
 			if(s->Particle[i].X[j]<s->Xdown[j])  
 				s->Particle[i].X[j]=s->Xdown[j];  
-			cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+			//cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
 		}   
 	}  
 }
@@ -362,7 +372,8 @@ void PSO_UpdateofVandX_CompressMutation(){
 		//printf(" The %dth of X is: ",i);  
 		for(j=0; j<PSO_Dim; j++)
 			s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
-		double phi = s->C1 + s->C2;
+
+		double phi = s->C1 + s->C2; //
 		double ksi = 2/abs(2-phi-sqrt(phi*phi - 4*phi));
 		s->Particle[i].V[j] = ksi*(s->Particle[i].V[j]+
 			(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - s->Particle[i].X[j])+  
@@ -382,7 +393,7 @@ void PSO_UpdateofVandX_CompressMutation(){
 				s->Particle[i].X[j]=s->Xup[j] - (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
 			if(s->Particle[i].X[j]<s->Xdown[j])  
 				s->Particle[i].X[j]=s->Xdown[j] + (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
-			cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+			//cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
 		}   
 	}  
 }
@@ -433,9 +444,9 @@ void PSO_UpdateofVandX_SecondBehavior(){
 		//printf(" The %dth of X is: ",i);  
 		for(j=0; j<PSO_Dim; j++)
 			s->Particle[i].LastV[j] = s->Particle[i].V[j];    // 先保存上一次的值
-		s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
-			(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j])+  
-			(double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j]);  
+			s->Particle[i].V[j] = s->W*s->Particle[i].V[j]+
+				(double)rand()/(RAND_MAX + 1)*s->C1*(s->Particle[i].PBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j])+  
+				(double)rand()/(RAND_MAX + 1)*s->C2*(s->GBest[j] - 2*s->Particle[i].X[j] + s->Particle[i].LastX[j]);  
 		for(j=0; j<PSO_Dim; j++){  
 			double vb = (s->Xup-s->Xdown)*0.3;
 			if(s->Particle[i].V[j]>vb)
@@ -451,7 +462,7 @@ void PSO_UpdateofVandX_SecondBehavior(){
 				s->Particle[i].X[j]=s->Xup[j] - (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
 			if(s->Particle[i].X[j]<s->Xdown[j])  
 				s->Particle[i].X[j]=s->Xdown[j] + (double)rand()/(RAND_MAX + 1)*0.8*(s->Xup[j] - s->Xdown[j]);  
-			cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
+			//cout << setw(15) << setprecision(6) << s->Particle[i].X[j];
 		}   
 	}
 }
@@ -519,7 +530,7 @@ void PSO_UpdatePandGbest( int nIter){
 	if (s->GBestFitness < 1)
 	{
 		s->total_convergence_time++;
-		if(fabs(gbest_temp - s->GBestFitness) < 1e-7)
+		if(fabs(gbest_temp - s->GBestFitness) < 1e-8)
 		{
 			s->consist_convergence_time++;
 		}
