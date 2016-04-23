@@ -178,6 +178,10 @@ void Adap_SS_Solver::initSolver(){
 	{
 		AdapParam::optCate=AdapParam::PSA;
 	}
+	else if (!strncmp(ModelParam::argv[2], "RST", 3))
+	{
+		AdapParam::optCate = AdapParam::NO_OPT;
+	}
 	else{
 		cout << "connot figure out adapParam::optType!" << endl;
 		exit(EXIT_FAILURE);
@@ -195,6 +199,16 @@ void Adap_SS_Solver::initSolver(){
 			<< setw(15) << "ErrorQ" << setw(15) << "kc" << setw(15) << "kp" << setw(15) << "km" 
 			<< setw(15) << "ks" << setw(15) << "J0" << setw(15) << "LRef" << setw(15) << "tauRef" 
 			<< setw(15) << "QRef" << endl;
+	}
+
+	if(AdapParam::optCate == AdapParam::NO_OPT)
+	{
+		/*char str[50];
+		sprintf(str, "Result_of_Parameters:%s_%s_%s_%s_%s_%s_%s_%s.txt", ModelParam::argv[ModelParam::argc - 8], ModelParam::argv[ModelParam::argc - 7],
+			ModelParam::argv[ModelParam::argc - 6], ModelParam::argv[ModelParam::argc - 5], ModelParam::argv[ModelParam::argc - 4],
+			ModelParam::argv[ModelParam::argc - 3], ModelParam::argv[ModelParam::argc - 2], ModelParam::argv[ModelParam::argc - 1]);*/
+		AdapParam::adapHemoFile.open("Result_of_Parameters.txt");
+		AdapParam::adapHemoFile << setw(15) << "NO." << setw(15) << "Diam" << setw(15) << "Vel" << setw(15) << "Flow" << setw(15) << "PO2" << endl;
 	}
 }
 
@@ -275,7 +289,7 @@ void Adap_SS_Solver::solve(){
 	case AdapParam::DOWNHILL:
 		break;
 	case AdapParam::NO_OPT:
-		AdapParam::initPriesAdapParam();
+		AdapParam::initYJLAdapParam();
 		AdapObjFunc();
 		break;
 	default:
@@ -539,6 +553,16 @@ int Adap_SS_Solver::AdapObjFunc()
 		diam_err_sum+=(Org_Diam[n]-adapDiam)*(Org_Diam[n]-adapDiam)/(Org_Diam[n]*Org_Diam[n]);
 		vel_err_sum+=4*(fabs(ModelParam::omega[n].MesVel)-adapVel)*(fabs(ModelParam::omega[n].MesVel)-adapVel)/((fabs(ModelParam::omega[n].MesVel)+adapVel)*(fabs(ModelParam::omega[n].MesVel)+adapVel));
 		flow_err_sum+=(adapFlow-orgFlow)*(adapFlow-orgFlow)/(orgFlow*orgFlow);
+		if (AdapParam::optCate == AdapParam::NO_OPT)
+		{
+			// 对第nIter次迭代的第i个粒子，记录仿真结果
+			AdapParam::adapHemoFile << setw(15) << n+1 << setw(15) << adapDiam << setw(15) << adapVel << setw(15) << adapFlow << setw(15) << ModelParam::omega[n].PO2 << endl;
+			if (n == ModelParam::Ndoms - 1)
+			{
+				AdapParam::adapHemoFile << setw(15) << "ErrV:" << setw(15) << sqrt(vel_err_sum / ModelParam::Ndoms) << endl;
+				AdapParam::adapHemoFile.close();
+			}
+		}
 	}
 	AdapParam::ErrorD=sqrt(diam_err_sum/ModelParam::Ndoms);
 	AdapParam::ErrorV=sqrt(vel_err_sum/ModelParam::Ndoms);

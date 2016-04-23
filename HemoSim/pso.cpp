@@ -411,12 +411,6 @@ void PSO_UpdateofVandX_QuantumBehavior(int nIter){
 			s->Particle[i].PBest[j] = pn*s->Particle[i].PBest[j] + (1-pn)*s->GBest[j];
 			pn = (double)rand()/(RAND_MAX + 1);
 
-			/*if rand < 0.5
-			x(i,d) = p(i,d)+beita*abs(mbest(d) - x(i,d))*log(1/fy);
-			else
-			x(i,d) = p(i,d)-beita*abs(mbest(d) - x(i,d))*log(1/fy);
-			end*/
-
 			if (pn < 0.5)
 			{
 				s->Particle[i].X[j] = s->Particle[i].PBest[j] + 
