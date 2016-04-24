@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 	if (argc < 3)
 	{
 		cout << "you need 2 arguments for Optmization: input file and optType! Or many numbers for PSA" << endl;
-		cout << "USEAGE: HemoSim.exe Net_546.in QUAPSO" << endl;
+		cout << "USEAGE: HemoSim.exe Net_546.in STDQPSO" << endl;
 		cout << "OR" << endl;
 		cout << "USEAGE: HemoSim.exe Net_546.in PSA 2.12749 0.21808 0.784955 2.79588 31.36 20164 0.116259 0.219394" << endl;
 		exit(EXIT_FAILURE);

@@ -400,8 +400,10 @@ void PSO_UpdateofVandX_CompressMutation(){
 
 void PSO_UpdateofVandX_QuantumBehavior(int nIter){
 	int i,j;  
-	// double Beita =  (1 - s->Alpha)*(PSO_N - nIter + 1)/PSO_N + s->Alpha;
-	double Beita =  0.7 + (double)rand()/(RAND_MAX+1);
+	//SELQPSO use random contraction-expansion fator BETA, STSQPSO¡¡use linear one.
+	double Beita = AdapParam::optMethod == AdapParam::STDQPSO ?
+		(1 - s->Alpha)*(PSO_N - nIter + 1)/PSO_N + s->Alpha :
+		0.7 + (double)rand()/(RAND_MAX+1);
 	srand((unsigned)time(NULL));
 	for(i=0; i<PSO_PNum; i++){  
 		//printf(" The %dth of X is: ",i);  
@@ -488,7 +490,7 @@ void PSO_ModifyVandX(int i){
 void PSO_UpdatePandGbest( int nIter){
 	int i,j;
 	if ( nIter == 1 ) {
-		//P=X;  
+		//first iteration P=X;  
 		for(i=0; i<PSO_PNum; i++){  
 			for(j=0;j<PSO_Dim;j++){  
 				s->Particle[i].PBest[j]=s->Particle[i].X[j];  
@@ -498,7 +500,7 @@ void PSO_UpdatePandGbest( int nIter){
 	}
 	else
 	{
-		//update of P if the X is bigger than current P  
+		//update of P if the FITNESS of X[i] get better than history  
 		for (i = 0; i < PSO_PNum; i++){  
 			//printf(" The %dth of P is: ",i);  
 			if (!(s->Particle[i].Fitness > s->Particle[i].PBestFitness)){  
@@ -521,16 +523,17 @@ void PSO_UpdatePandGbest( int nIter){
 				s->GBest[j]=s->Particle[i].PBest[j];
 			}
 		}
+
 	if (s->GBestFitness < 1)
 	{
 		s->total_convergence_time++;
 		if(fabs(gbest_temp - s->GBestFitness) < 1e-8)
 		{
-			s->consist_convergence_time++;
+			s->consist_convergence_time++;	//accumulate for global decress not happend
 		}
 		else
 		{
-			s->consist_convergence_time = 1;
+			s->consist_convergence_time = 1;//or reset to 1 for global best fitness has been updated
 		}
 	}
 	//cout<< "Fitness of GBest: " << setprecision(6) << setw(12) << s->GBestFitness <<endl;
@@ -543,11 +546,13 @@ void PSO_UpdatePandGbest( int nIter){
 	{
 		AdapParam::adapGBestFile << setw(12) << "GBest=" << s->GBestFitness << endl;
 	}
-	//calc MeanX
-	if (AdapParam::optMethod == AdapParam::QUAPSO)
+	
+	if (AdapParam::optMethod == AdapParam::STDQPSO ||
+		AdapParam::optMethod == AdapParam::SELQPSO)
 	{
 		for (j=0; j<PSO_Dim; j++)
 		{
+			//calculate MeanP
 			double temp = 0;
 			for (i=0; i<PSO_PNum; i++)
 			{
@@ -556,8 +561,10 @@ void PSO_UpdatePandGbest( int nIter){
 			s->MeanX[j] = temp/PSO_PNum;
 		}
 
+		// from second iteration, particles will be sorted and selective to assign a good particle position
 		if(nIter != 1)
 		{
+			//qsort for ascending order
 			constexpr std::size_t pso_size_t = sizeof s->Particle / sizeof *s->Particle;
 
 			std::qsort(s->Particle, pso_size_t, sizeof *s->Particle, [](const void* x, const void* y)
@@ -573,6 +580,7 @@ void PSO_UpdatePandGbest( int nIter){
 					return 0;
 			});
 
+			//assign good particle position to poor one
 			for (i = 0; i < PSO_PNum/2; i++)
 			{
 				for (j = 0; j < PSO_Dim; j++)
@@ -582,12 +590,27 @@ void PSO_UpdatePandGbest( int nIter){
 			}
 		}
 	}
-	else if (AdapParam::optMethod == AdapParam::SELPSO)
+	else if (AdapParam::optMethod == AdapParam::SELQPSO)
 	{
-		PSO_QuickSort(s->Particle, 0, PSO_PNum);
-		for (i=0; i<PSO_PNum/2; i++)
+		/*PSO_QuickSort(s->Particle, 0, PSO_PNum);*/
+
+		constexpr std::size_t p_size_t = sizeof s->Particle / sizeof *s->Particle;
+		std::qsort(s->Particle, p_size_t, sizeof *s->Particle, [](const void* x, const void* y)
 		{
-			for (j=0; j<PSO_Dim; j++)
+			particle a = *static_cast<const struct PARTICLE*>(x);
+			particle b = *static_cast<const struct PARTICLE*>(y);
+
+			if (a.Fitness - b.Fitness < 1e-7)
+				return -1;
+			else if (a.Fitness - b.Fitness > 1e-7)
+				return 1;
+			else
+				return 0;
+		});
+
+		for (i = 0; i<PSO_PNum / 2; i++)
+		{
+			for (j = 0; j<PSO_Dim; j++)
 			{
 				s->Particle[PSO_PNum - 1 - i].X[j] = s->Particle[i].X[j];
 			}
@@ -603,36 +626,3 @@ static double PSO_ComputAFitness(double X[])
 	return AdapParam::ErrorV;
 	// return AdapParam::ErrorQ;
 }  
-
-
-void PSO_QuickSort(particle A[], int p,int q)
-{
-	int r;
-	if(p<q)
-	{
-		r=PSO_QuickSortPartion(A, p,q);
-		PSO_QuickSort(A,p,r);  
-		PSO_QuickSort(A,r+1,q);
-	}
-}
-
-
-int PSO_QuickSortPartion(particle A[], int p,int q)
-{
-	double x= A[p].Fitness;
-	int i=p;
-	int j;
-
-	for(j=p+1; j<q; j++)
-	{
-		if(A[j].Fitness <= x)
-		{
-			i=i+1;
-			swap(A[i],A[j]);
-		}
-
-	}
-
-	swap(A[i],A[p]);
-	return i;
-}

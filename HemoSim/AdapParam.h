@@ -11,7 +11,7 @@ public:
 
 	static void initPriesAdapParam();
 	static void initYJLAdapParam();
-	static void initRandomAdapParam();
+	static void initAdapParamBounder();
 	static void setPara2PSO(double X[]);
 
 	enum OptCate{
@@ -23,10 +23,10 @@ public:
 	};
 	// 优化方法
 	enum OptType{
-		STDPSO=0,
+		STDPSO=0, /*例子中粒子数目20，学习因子都取2，惯性权重0.7，迭代步数取10000*/
 		CMPPSO=1, /*学习因子相加大于4，典型：c1=2.8,c2=1.3 粒子数目30，学习因子都为1，迭代步数10000*/
-		SELPSO=2, /*例子中粒子数目40，学习因子都取2，惯性权重0.7，迭代步数取10000*/
-		QUAPSO=3,
+		STDQPSO=2, /*例子中粒子数目20，线性压缩扩张系数，迭代步数取5000*/
+		SELQPSO=3, /*例子中粒子数目20，随机压缩扩张系数，带选择算子，迭代步数取5000*/
 		SECPSO=4, /*本例中学习因子不能都取2，参考例子给出：粒子数40，c1=c2=1, 惯性权重0.7， 迭代步数10000*/
 	};
 

@@ -118,7 +118,7 @@ void AdapParam::initYJLAdapParam(){
 	//tauRef2[0] = 0.114734;         // dyn/cm2
 	//QRef2[0] = 0.20811;
 
-	if(ModelParam::argc < 8)
+	if(ModelParam::argc < 10)
 	{
 		kc2[0] = 1.97485;
 		kp2[0] = 0.597905;
@@ -148,7 +148,7 @@ void AdapParam::initYJLAdapParam(){
 	QRef=0.001;
 }
 
-void AdapParam::initRandomAdapParam(){
+void AdapParam::initAdapParamBounder(){
 	int var=5;
 	// ãÐÖµ
 	PO2Ref[1]   = 96;       // mmHg

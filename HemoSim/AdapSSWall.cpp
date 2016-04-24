@@ -169,10 +169,15 @@ void Adap_SS_Solver::initSolver(){
 		AdapParam::optCate=AdapParam::PSO;
 		AdapParam::optMethod = AdapParam::CMPPSO;
 	}
-	else if (!strncmp(ModelParam::argv[2], "QUAPSO",6))
+	else if (!strncmp(ModelParam::argv[2], "STDQPSO",6))
 	{
 		AdapParam::optCate=AdapParam::PSO;
-		AdapParam::optMethod = AdapParam::QUAPSO;
+		AdapParam::optMethod = AdapParam::STDQPSO;
+	}
+	else if (!strncmp(ModelParam::argv[2], "SELQPSO", 6))
+	{
+		AdapParam::optCate = AdapParam::PSO;
+		AdapParam::optMethod = AdapParam::SELQPSO;
 	}
 	else if (!strncmp(ModelParam::argv[2], "PSA",3))
 	{
@@ -223,12 +228,12 @@ void Adap_SS_Solver::solve(){
 		//AdapParam::initPriesAdapParam();
 		// 以目前最好的结果为起点，
 		AdapParam::initYJLAdapParam();
-		AdapParam::initRandomAdapParam();   // 初始化自适应参数
+		AdapParam::initAdapParamBounder();   // 初始化自适应参数
 		PSO_RandInitofSwarm();              // 初始化PSO参数
 		// PSO_PriesInitofSwarm();
 
 		// Start Iteration
-		while(n++ < PSO_N && s->consist_convergence_time < 30 && s->total_convergence_time < 500)
+		while(n++ < PSO_N)
 		{  
 			AdapParam::adapLogFile << "Iteration " << n << endl;
 			//printf("The %dth time to calculate .\n", n);
@@ -245,7 +250,8 @@ void Adap_SS_Solver::solve(){
 				case AdapParam::CMPPSO:
 					PSO_UpdateofVandX_CompressMutation();
 					break;
-				case AdapParam::QUAPSO:
+				case AdapParam::SELQPSO:
+				case AdapParam::STDQPSO:
 					PSO_UpdateofVandX_QuantumBehavior(n);
 					break;
 				case AdapParam::SECPSO:
@@ -264,7 +270,7 @@ void Adap_SS_Solver::solve(){
 			//AdapParam::initPriesAdapParam();
 			// 以目前最好的结果为起点，
 			AdapParam::initYJLAdapParam();
-			AdapParam::initRandomAdapParam();
+			AdapParam::initAdapParamBounder();
 			PSA psa;
 			psa.set_step_len(atoi(ModelParam::argv[3]));
 			psa.init_particle_temp();

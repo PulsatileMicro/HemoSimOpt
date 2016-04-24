@@ -44,8 +44,6 @@ void    PSO_ModifyVandX(int i);
 void    PSO_UpdatePandGbest(int);
 
 double  PSO_ComputAFitness(double X[]);
-void	PSO_QuickSort(particle[], int, int);
-int		PSO_QuickSortPartion(particle[], int, int);
 extern swarm *s;
 extern particle *p;
 
